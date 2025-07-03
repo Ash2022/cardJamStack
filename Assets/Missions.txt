@@ -1,0 +1,328 @@
+have on the top - 2 rows they start with 7 places in each and go to 9
+the middle place for putting the boxes - starts are 5 and grows to 7.
+the bottom - has potential grid of 8*7
+boxes show their contents if they are not blocked to reach the top line. 
+only the front row shows its contents.
+
+there are hidden start color boxes
+there are pipes that generate multiple boxes on the same location 
+they are behind the slot  
+
+
+i am making a new unity game, i want you to build for me a Unity editor script that will help me
+build levels, i want an editor script that will not use any scritable objects.
+instead the levels are saved to json files.
+
+the game is as follows, there are color coded boxes (color is int), each box comes with 3 cards inside, 
+the cards are also color coded with the same indexes.
+
+there are 8*7 potential slots to have boxes placed on them.
+a box can be played if its not blocked all the way to the top row.
+so if we have a grid of 3*3 - only they top row boxes can be played - assume that the box in 1,0 was played, 
+now also the box at 1,1 can be played.
+
+in addition to the 8*7 grid of potential box positions there are a couple of extra elements.
+
+when you click on an unlocked box it goes to a middle area in the game, this middle area start with 5 slots
+and gradually adds more slots - up to 7.
+if all the slots are full - you cannot play a box to go there.
+
+when a box was played to the middle part, its contents (the 3 color coded cards) move to a third location - top most 
+location - this one starts with 2 rows - each having 7 places, and it gradually grows to 2 rows with 9 places.
+
+this gradual grow happens across levels - and not in a level.
+
+once a box was played to middle - its contents moved to the slots on top, the next part starts, the cards based on their color will now move
+from the top part to the boxes in the middle, based on their color, once a box is filled with 3 cards of the matching color - 
+the box disappear and its slot is emptied.
+
+this is the game.
+
+before we do anything - do you understand the game? do you have any questions? 
+
+
+Questions before I start scripting:
+
+How do you want to specify the per-level growth of middle slots and top-area columns? (e.g. an integer in the JSON for “middleMaxSlots” and “topColumns”?)
+
+For positioning, do you have fixed world-space coordinates for grid/middle/top slots, or should the editor calculate them based on a RectTransform area?
+
+Any naming conventions or metadata you’d like in the JSON (level name, seed for random box colors, color-palette definitions)?
+
+Should the editor preview “blocked/unblocked” state visually (e.g. grey out locked boxes)?
+
+Let me know, and I’ll draft the editor script outline.
+
+1. in the grid area, when the boxes start, they typically will have cards of different colors than the box
+ - so when it goes to the middle - the cards go out - and other cards with the right color come back to fill the box
+ - once its full - its gone.
+ 
+How do you want to specify the per-level growth of middle slots - we should have in the per level data the current number of middle slots.
+
+for positioning - i want the grid to be at the bottom of the UI of the editor script.
+i dont care about naming convention at the moment.
+editor doesnt need to show blocked/unblocked - 
+but later we will build a simulator to play the game - so i am explaining the rules.
+
+in addition - a box can start in a hidden state, meaning i dont see its color until its unlocked.
+another feature we need some of the positions on the grid can have instad of a place for a box - a pipe 
+a pipe has a number setting and it creates this number of boxes on that grid slot.
+
+before we code anything - can you draft me a data structure to define such level
+
+
+
+ok - let's add one more thing to level data - which is the number of top rows.
+
+i want the editor to have load and save from and to json buttons.
+i want to have sliders for the following values:
+number of colors:2-8.
+number of middle slots: 5-7.
+number of places in top rows: 7-9.
+number of top rows - dont make a slider - keep it as 2 - i am not sure we will change the number of rows.
+
+than i want to see a 8*7 grid, each rect in the grid should be 100*100,
+if i left click on a grid rect it should change from exist to not exist.
+if it doesnt exist it should be black.
+
+if i right click on a rect, i can change it to say either start hidden, or pipe rect.
+if i pick start hidden, it means that whatever box will be on this location, should be marked 
+as start hidden.
+if i choose pipe, it makes the location above that rect (y+1) holds X number of boxes 
+so than on the location i choose to make pipe, you need to put a drop box or text box so i can specify the
+quantity.
+
+this means you might need to change the data structure - cause now each grid location 
+is not 1 box - but it might be multiple boxes - but this is only if it has a pipe on it.
+
+than i want to have a button to say randomize values:
+this now needs to put on all the rects the boxes and their data
+the box is a 90*90 rect with color - if i click on that box - it needs to cycle its color.
+on each box - i should have 3 small rects, each 25*25 - they also start with a random color, and if clicked should also cycle their color.
+
+to make sure - the pipe sits in a row below the position it really effects.
+
+this seems like everything for the first step, is everything clear? questions before we implement?
+
+
+
+few things to modify:
+
+1. when i left click on a rect - it does the exist/not exist - however - when there
+is a box above it and i click the box - it doesnt cycle the color - it does the exist/not exist 
+and same thing also for clicking the little rects inside the exist/not exist consumes the event.
+
+2. when i select pipe - the cell above it is the cell that holds the pipe boxes, and the pipe cell
+should have an editable text box or drop down so i can specify the amount of boxes in the pipe.
+
+give me only the changes
+
+
+
+great - everything seems to be working well.
+next:
+1. i want to visualize also the top and middle parts - 
+the top part should show X rows (2) each row should show based on the slider value boxes to visualize place holders for the cards.
+2. i want to visualize also the middle part - based on the slider values - show the correct amount of box placeholders 
+
+3. i want to confirm that the grid 0,0 is what i see visually drawn at the top left in the editor window.
+
+give me only the changes 
+
+
+
+ok - looks good -
+
+let's make a new helper static class - this will be the entire game logic.
+
+first thing we need to make is a method to say if a box is locked or unlocked.
+
+a box is unlocked if its in top most row or if there is no boxes blocking its path
+to the top row - a box can "move" only left/right or up/down - no diagonal.
+an empty pipe doesnt block.
+
+method needs to get the level data - and boxID and should say if the box is locked or not locked.
+
+before you implement?
+is this crystal clear? its very important to get those things right.
+
+
+next thing i want to do is make the game loop.
+before we do that we need to expand the LevelData class -
+need to be able to track which middle slots are full and with whice box.
+need to be able to track which top slots are full and with which cards.
+
+this doesnt get filled in the editor script - but only in run time as we start playing.
+but since i want to do all the checks and calculations on data - i think we should add this in the LevelData.
+
+
+ok - let's make the main Game loop,
+things can only happen when user clicks a box.
+
+what is most important is that whatever happens we first update the model, even before animation ends
+so that model is always updated and user can play very fast.
+
+so when a box is clicked - need to find the first empty slot that we have and move the box there.
+
+when the box gets to the middle - we need to move all its cards to the first free card slot that we have
+
+each card takes one slot - again - we first update the model and only than do any animations.
+
+next thing that happens - we try to fill the empty middle boxes with cards - 
+we try to fill boxes before moving on to the next box of the same color - 
+
+if box in the middle got filled with 3 cards (they all should match its color) - the box is cleared.
+
+i want the method to be built in a way so that i can click many boxes fast, so that even before cards flow 
+back to an empty box a new one would fly to the middle position.
+
+i am not sure what is the best way to do this - if we update the entire model at the start of the click -
+it will already make it so that the cards are moved to middle boxes after being color sorted 
+which means all the cards will always go to the first few card slots - cause they would right away be marked 
+as empty - so maybe we need to update the model more than once - during the animation?
+what do you think? how to support both fast play and keep the system stable?
+
+is everything clear? is my explnation clear?
+
+
+i want another expansion
+i want to make in the level data - the middle slots - i want to have a new dataType - MiddleSlot
+it needs to have int unlocks at level.
+and maybe we can also give it an ID.
+so levelData will have a list<MiddleSlot> instead of middleSlotCount.
+
+for the top i want to have 2 params:
+int numberOfRows (2)
+int numberOfTopSlotsPerRow - starts at 7 and grows.
+
+
+looks good - now i want us to build 3 main components:
+
+
+2. LevelVisualizer - it needs to get LevelData and visualize the level.
+needs to have serializedField  for the following:
+TopHolder - transform
+TopHolderPrefab  - GO
+TopSlotPrefab - GO
+
+MiddleHolder - transform
+MiddleHolderPrefab -go
+MiddleSlotPrefab -go
+
+GridHolder - transform
+GridHolderPrefab - go
+GridSlotPrefab - go
+BoxPrefab - go
+PipePrefab - go
+CardPrefab - go
+
+than based on the levelData it needs to build the level visually.
+
+it start by cloning TopHolderPrefab and putting it in TopHolder.
+than based on number of rows and item per row - clone top slots prefab into the TopHolderPrefab
+space them equally on the X axis and take into account have Y number of rows.
+
+than need to do the same for the middle - clone the MiddleHolderPrefab into the MiddleHolder.
+and based on number of slots in the list - create middleSlotsPrefabs - put them in the MiddleHolderPrefab and space them on the X.
+
+last - do the grid 
+generate all the grid slots (even the ones that dont exist - the view will hide them)
+foreach slot - if it exist - it should have a box
+so slot than makes its box 
+inits the box with the BoxData (box will have a boxview)
+if the slot cell is pipe - do same with pipe prefab - and init the PipeView with its relevant data.
+
+after we do this we will init all the cards 
+
+do you think i am leaving something out? makes sense? any questions before we code?
+make this in a new class
+
+
+
+
+do you think its better to modify the GridCellView to be able to display Pipe and than remove the PipeView and the PipePrefab?
+
+
+
+ok - building seems to work - but all the spaces are completely off.
+
+lets start with Grid - the grid has on it a spriteRenderer - this is the frame of the grid - you can look on the Width and Height of this 
+to know the total space you have - than add some vector in the code that will be the size of grid cell - start it at 0.7,0.7 - and ill modify as
+needed - than you can calculate the space between all the cells.
+i want to remind you that it needs to visualize like it is in the editor- so the first cell (0,0) is the left top most cell
+
+give me fixes
+
+
+last one is the trickiest - but it follows similar idea.
+Top prefab has 2 children - row1 and row2.
+each one of them has a SR - for getting its size.
+when we clone the top slots - the first row of top slots should go under top/Row1 and the second row in top.Row2.
+the rows have TopRowView on them - if you want to use it.
+
+Do you understand? 
+
+
+
+ok - this is the initalize of GridCellView
+
+internal void Initialize(GridSlot slot)
+{
+    //throw new NotImplementedException();
+}
+
+let's now give add to it the logic to make create a box or to show as pipe or to show as empty.
+you can add whatever serialized fields you want
+
+
+ok - now we need to do the initialize method of BoxView -
+it gets its data - it needs to first color the box itself with its color (for now we will change colors - later we will replace sprites)
+and it needs to build and position its cards in place -- and than init the cards
+a boxView - can start hidden - so take this to account.
+
+we need to use our helper class to determine if the box is in locked or unlocked 
+because this determines if the cards will start show at start or not.
+
+the hidden/not hidden flag determines if the box shows as a ? or if it shows as its color.
+for now the hidden can color the box in gray and turn on a GameObeject that is the ?.
+
+for the cards themselves - there is CardSlots under box root - this has 3 children - Slot1/2/3 - they are the places for the cards to 
+actually be created into.
+
+you can add any serialized fields needed.
+
+looks good - things seem to be working
+
+now we need to add some more parts before we go to logic:
+
+1. ModelManager - this class (singleton) will hold serializedField reference to List<TextAssets> - the levels data
+when init, it reads the files and builds a List<LevelData> - needs to have  amethod to GetLevelByIndex, this one 
+needs to make a copy of the level and send back.
+
+2. GameManager - this is where the game start - this will initialize anything that needs initialization (like ModelManager).
+after init is done - it needs to get a copy of the current level (by index) from ModelManager
+send it to the visualizer for building and than start the game.
+
+make me those 2 classes
+
+Hey Nicolas,
+We can start with something like that - but than i cannot produce 4 games a month, 
+it will be more like 2, and ill explain why.
+for making 4 games i need to be 100% full time no distractions on the mission.
+with my current life status if i want to do this i need to hire someone to help 
+me with my kids.
+I know that up to now i do the same thing without getting any money, and im doing it for 1 year+.
+But i did it because i had my wife pregnent and had a new child born and i could
+work part time and still try and make games. as none of my games were good enough
+i was already thinking about stopping and getting a job as developer, or trying to 
+find some angel to finance my operation based on my results.
+When i talked to some investors in the field we discussed making 50 games in 2
+years and getting 250K for that - which is 5000 per game, and i need to make 2 games a month.
+
+I like working with you, and even more i like making prototypes,
+your offer came just in the right time, but 5K a month 
+in israel is very little, and i cant commit to full time for this.
+
+
+ 
+
