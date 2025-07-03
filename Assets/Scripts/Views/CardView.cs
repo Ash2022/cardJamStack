@@ -13,6 +13,7 @@ public class CardView : MonoBehaviour
     private LevelVisualizer _visualizer;
     private LevelData _level;
     bool flyingToTop = false;
+    bool reachedTop = false;
 
     public CardData Data { get => _data; set => _data = value; }
 
@@ -52,15 +53,20 @@ public class CardView : MonoBehaviour
         Transform rowTf      = topRoot.GetChild(row);
         Transform targetSlot = rowTf.GetChild(col);
 
+        //Debug.Log("FlyToTopSlot");
+
         transform.SetParent(targetSlot);
         Tween tween= transform.DOLocalMove(Vector3.zero, flyDuration)
             .SetEase(Ease.OutQuad)
             .OnComplete(() =>
             {
+                reachedTop = true;
                 flyingToTop = false;
                 // after landing in top slot, decide if we need to continue
                 if (_data.resolvedBox != null)
                 {
+                    //Debug.Log("FlyToMidBox ---- CardReachedTop");
+
                     FlyToMiddleBox();
                 }
             });
@@ -77,7 +83,11 @@ public class CardView : MonoBehaviour
         else
         {
             //its already waiting there - so we need to make it move to box
-            FlyToMiddleBox();
+
+            //Debug.Log("FlyToMidBox ---- TargetBoxReached");
+
+            if(reachedTop)
+                FlyToMiddleBox();
         }
     }
 
@@ -103,6 +113,8 @@ public class CardView : MonoBehaviour
 
         // ask the BoxView for the exact card‐slot transform
         Transform slotTf = boxView.GetCardSlotTransform(_data);
+
+        
 
         // reparent & animate
         transform.SetParent(slotTf);

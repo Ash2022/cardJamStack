@@ -58,12 +58,12 @@ public class GameManager : MonoBehaviour
         
         //init helper data
 
-        for (int i = 0; i < CurrentLevelData.middleSlots.Count; i++)
-            CurrentLevelData.middleSlotBoxes.Add(null);
+        //for (int i = 0; i < CurrentLevelData.middleSlots.Count; i++)
+        //    CurrentLevelData.middleSlotBoxes.Add(null);
 
-        for (int i = 0; i < CurrentLevelData.numberOfTopSlotsPerRow; i++)
-            for (int j = 0; j < CurrentLevelData.numberOfRows; j++)
-                CurrentLevelData.topSlotsCards.Add(null);
+        //for (int i = 0; i < CurrentLevelData.numberOfTopSlotsPerRow; i++)
+        //    for (int j = 0; j < CurrentLevelData.numberOfRows; j++)
+        //        CurrentLevelData.topSlotsCards.Add(null);
 
         gameOver = false;
 
@@ -113,8 +113,13 @@ public class GameManager : MonoBehaviour
             midIndex = level.middleSlotBoxes.FindIndex(b => b != null && b.resolved);
         if (midIndex < 0)
         {
-            GameOver(false);
-            Debug.Log("Game Over: no free middle slot");
+            //this is not a sure lose - because maybe all the boxes are resolved - but they still didnt arrive 
+            
+            //if also all the top slots are full 
+
+
+            //GameOver(false);
+            //Debug.Log("Game Over: no free middle slot");
             return;
         }
 
@@ -203,6 +208,8 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        Debug.Log("midIndex: " + midIndex);
+
         var slotTf = LevelVisualizer.Instance.MiddleHolder.GetChild(0).GetChild(midIndex);
 
         boxView.StartFlyToMiddle(slotTf, midIndex);
@@ -266,7 +273,7 @@ public class GameManager : MonoBehaviour
             if (_cardViewsByID.TryGetValue(card.cardID, out var cv))
             {
                 // fly the card into this box’s designated slot
-                cv.FlyToMiddleBox();
+                cv.TargetBoxReachedItsMiddleSlot(boxView);
             }
             else
             {

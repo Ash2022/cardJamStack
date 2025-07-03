@@ -349,71 +349,61 @@ public class LevelEditorWindow : EditorWindow
             }
             else if (slot.type == SlotType.Pipe && slot.pipe != null)
             {
-                // every pipe‐queued box emerges at (x, y+1)
                 var spawnPos = new Vector2Int(slot.x, slot.y + 1);
                 foreach (var b in slot.pipe.boxes)
                     b.gridPosition = spawnPos;
             }
         }
 
-        // 2) Assign unique IDs to every box
+        // 2) Re-assign unique IDs to every grid box (B001, B002, …)
         int nextGridId = 1;
         foreach (var slot in currentLevel.gridSlots)
         {
             if (slot.type == SlotType.Box && slot.box != null)
             {
-                var b = slot.box;
-                if (string.IsNullOrEmpty(b.boxID))
-                    b.boxID = $"B{nextGridId++:000}";
+                slot.box.boxID = $"B{nextGridId++:000}";
             }
-            else if (slot.type == SlotType.Pipe && slot.pipe != null)
+        }
+
+        // 3) Re-assign unique IDs to every pipe-spawned box (P_x_y_1, P_x_y_2, …)
+        foreach (var slot in currentLevel.gridSlots)
+        {
+            if (slot.type == SlotType.Pipe && slot.pipe != null)
             {
                 for (int i = 0; i < slot.pipe.boxes.Count; i++)
                 {
                     var b = slot.pipe.boxes[i];
-                    // prefix pipe boxes with P_x_y_i
-                    if (string.IsNullOrEmpty(b.boxID))
-                        b.boxID = $"P_{slot.x}_{slot.y}_{i + 1}";
+                    b.boxID = $"P_{slot.x}_{slot.y}_{i + 1}";
                 }
             }
         }
 
-        // 3) Assign cardIDs for every card in every box
+        // 4) Re-assign every card’s ID to match its box (boxID_C1, C2, C3)
         foreach (var slot in currentLevel.gridSlots)
         {
             if (slot.type == SlotType.Box && slot.box != null)
             {
                 var b = slot.box;
                 for (int i = 0; i < b.initialCards.Count; i++)
-                {
-                    var c = b.initialCards[i];
-                    if (string.IsNullOrEmpty(c.cardID))
-                        c.cardID = $"{b.boxID}_C{i + 1}";
-                }
+                    b.initialCards[i].cardID = $"{b.boxID}_C{i + 1}";
             }
             else if (slot.type == SlotType.Pipe && slot.pipe != null)
             {
                 foreach (var b in slot.pipe.boxes)
-                {
                     for (int i = 0; i < b.initialCards.Count; i++)
-                    {
-                        var c = b.initialCards[i];
-                        if (string.IsNullOrEmpty(c.cardID))
-                            c.cardID = $"{b.boxID}_C{i + 1}";
-                    }
-                }
+                        b.initialCards[i].cardID = $"{b.boxID}_C{i + 1}";
             }
         }
 
-        // 4) Serialize to JSON
+        // 5) Serialize to JSON
         string json = JsonUtility.ToJson(currentLevel, prettyPrint: true);
         string path = EditorUtility.SaveFilePanel("Save Level JSON", "", "level.json", "json");
-        if (string.IsNullOrEmpty(path))
-            return;
-        File.WriteAllText(path, json);
+        if (string.IsNullOrEmpty(path)) return;
 
+        File.WriteAllText(path, json);
         Debug.Log($"Level saved to {path}");
     }
+
 
 
 

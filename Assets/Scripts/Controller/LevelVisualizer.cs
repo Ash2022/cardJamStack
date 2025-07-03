@@ -77,7 +77,7 @@ public class LevelVisualizer : MonoBehaviour
                     above.box = pipeSlot.pipe.boxes[0];
 
                     // consume it so next Visualize / respawn won’t reuse it
-                   // pipeSlot.pipe.boxes.RemoveAt(0);
+                    //pipeSlot.pipe.boxes.RemoveAt(0);
                 }
             }
         }

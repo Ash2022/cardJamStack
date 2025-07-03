@@ -21,12 +21,7 @@ public class GridCellView : MonoBehaviour
 
         // Check for a pipe below that still has boxes, and show its first box here
         var level = GameManager.Instance.CurrentLevelData;
-        bool abovePipe = level.gridSlots.Any(
-            s => s.x == slot.x
-              && s.y == slot.y + 1
-              && s.type == SlotType.Pipe
-              && s.pipe != null
-              && s.pipe.boxes.Count > 0);
+        bool abovePipe = level.gridSlots.Any(s => s.x == slot.x && s.y == slot.y + 1 && s.type == SlotType.Pipe && s.pipe != null && s.pipe.boxes.Count > 0);
         if (abovePipe)
         {
             var pipeSlot = level.gridSlots.First(

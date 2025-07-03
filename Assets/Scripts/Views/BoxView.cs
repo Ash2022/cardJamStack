@@ -134,12 +134,17 @@ public class BoxView : MonoBehaviour
     public void NotifyCardArrived(CardView cardView)
     {
         _cardsArrived++;
-        if (_cardsArrived >= _cardsExpected)
+
+        //Debug.Log("Cards Arrived " + _cardsArrived);
+
+        if (_cardsArrived == _cardsExpected)
             StartDisappear();
     }
 
     private void StartDisappear()
     {
+        //Debug.Log(transform);
+
         // tween scale to zero
         transform.DOScale(Vector3.zero, 1)
             .SetEase(Ease.InBack)
