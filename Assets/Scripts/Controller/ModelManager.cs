@@ -45,4 +45,9 @@ public class ModelManager : MonoBehaviour
         string json = JsonUtility.ToJson(_templates[index], true);
         return JsonUtility.FromJson<LevelData>(json);
     }
+
+    public int GetNumLevels()
+    {
+        return _templates.Count;
+    }
 }

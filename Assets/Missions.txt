@@ -305,24 +305,15 @@ send it to the visualizer for building and than start the game.
 
 make me those 2 classes
 
-Hey Nicolas,
-We can start with something like that - but than i cannot produce 4 games a month, 
-it will be more like 2, and ill explain why.
-for making 4 games i need to be 100% full time no distractions on the mission.
-with my current life status if i want to do this i need to hire someone to help 
-me with my kids.
-I know that up to now i do the same thing without getting any money, and im doing it for 1 year+.
-But i did it because i had my wife pregnent and had a new child born and i could
-work part time and still try and make games. as none of my games were good enough
-i was already thinking about stopping and getting a job as developer, or trying to 
-find some angel to finance my operation based on my results.
-When i talked to some investors in the field we discussed making 50 games in 2
-years and getting 250K for that - which is 5000 per game, and i need to make 2 games a month.
-
-I like working with you, and even more i like making prototypes,
-your offer came just in the right time, but 5K a month 
-in israel is very little, and i cant commit to full time for this.
 
 
  
 
+ ToDo:
+ 1. blender
+ 2. check game over when trying to put box and no top spaces.
+ 3. center the grid based on how many full are in the top X row.
+ 4. index offseter for the colors
+ 5. fix pipe display and visuals --- DONE
+ 6. unlocks - comes after the level loads
+ 7. level5 - data defect -- DONE

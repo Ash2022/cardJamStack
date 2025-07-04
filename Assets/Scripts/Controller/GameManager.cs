@@ -10,9 +10,10 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [Header("Start Settings")]
-    [SerializeField] private int startLevelIndex = 0;
+    [SerializeField] private int currLevelIndex = 0;
     [SerializeField] public LevelVisualizer visualizer;
-
+    [SerializeField] GameOverView gameOverView;
+    [SerializeField] InGameUIView inGameUIView;
 
     private Dictionary<string, CardView> _cardViewsByID = new Dictionary<string, CardView>();
     private Dictionary<string, BoxView> _boxViewsByID = new Dictionary<string, BoxView>();
@@ -40,37 +41,29 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        LoadAndStartCurrLevel();
+    }
+
+    private void LoadAndStartCurrLevel()
+    {
+        _cardViewsByID.Clear();
+        _boxViewsByID.Clear();
+
         // Load a fresh copy of the requested level
-        CurrentLevelData = ModelManager.Instance.GetLevelByIndex(startLevelIndex);
-        if (CurrentLevelData == null)
-        {
-            Debug.LogError("GameManager: Failed to load level data.");
-            return;
-        }
+        CurrentLevelData = ModelManager.Instance.GetLevelByIndex(currLevelIndex);
 
-        // Build the visual representation
-        if (visualizer == null)
-        {
-            Debug.LogError("GameManager: LevelVisualizer reference is not set.");
-            return;
-        }
         visualizer.VisualizeLevel(CurrentLevelData);
-        
-        //init helper data
 
-        //for (int i = 0; i < CurrentLevelData.middleSlots.Count; i++)
-        //    CurrentLevelData.middleSlotBoxes.Add(null);
-
-        //for (int i = 0; i < CurrentLevelData.numberOfTopSlotsPerRow; i++)
-        //    for (int j = 0; j < CurrentLevelData.numberOfRows; j++)
-        //        CurrentLevelData.topSlotsCards.Add(null);
+        inGameUIView.InitUI(CurrentLevelData,currLevelIndex);
 
         gameOver = false;
-
     }
 
     void Update()
     {
+        if (gameOver)
+            return;
+
         if (!Input.GetMouseButtonDown(0))
             return;
 
@@ -208,7 +201,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        Debug.Log("midIndex: " + midIndex);
+        //Debug.Log("midIndex: " + midIndex);
 
         var slotTf = LevelVisualizer.Instance.MiddleHolder.GetChild(0).GetChild(midIndex);
 
@@ -220,17 +213,25 @@ public class GameManager : MonoBehaviour
             // pop the clicked box from the pipe’s queue
             pipeSlot.pipe.boxes.Remove(clickedBox);
 
+            GridCellView pipeCellView = LevelVisualizer.Instance.GetGridCellView(pipeSlot.x, pipeSlot.y);
+
+            PipeView pipeView = pipeCellView.GetComponentInChildren<PipeView>();
+
             // if there’s another in the queue, spawn it into exitSlot
             if (pipeSlot.pipe.boxes.Count > 0)
             {
                 var nextBox = pipeSlot.pipe.boxes[0];
                 nextBox.gridPosition = exitPos;
                 exitSlot.type = SlotType.Box;
-                exitSlot.box = nextBox;
+                exitSlot.box = nextBox;               
+
+                pipeView.UpdatePipeCounter(pipeSlot.pipe.boxes.Count);
+
             }
             else
             {
                 // pipe is drained: leave exitSlot.box null but passable
+                pipeView.PipeCompleted();
                 exitSlot.type = SlotType.Box;
             }
 
@@ -375,12 +376,29 @@ public class GameManager : MonoBehaviour
         if (win)
         {
             Debug.Log("Game Over: YOU WIN!");
-            // TODO: show win UI, stop input, etc.
+            // TODO: show win UI, stop input, etc.            
+
         }
         else
         {
             Debug.Log("Game Over: YOU LOSE!");
             // TODO: show fail UI, stop input, etc.
         }
+
+        gameOverView.ShowGameOver(win, GameOverNextClicked);
+    }
+
+    private void GameOverNextClicked(bool win)
+    {
+        if(win)
+        {
+            currLevelIndex++;
+
+            if(currLevelIndex == ModelManager.Instance.GetNumLevels())
+                currLevelIndex = 0;
+
+        }
+
+        LoadAndStartCurrLevel();
     }
 }

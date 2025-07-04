@@ -7,7 +7,7 @@ public class CardView : MonoBehaviour
     [SerializeField] private float flyDuration = 0.75f;
 
     [Header("Visual References")]
-    [SerializeField] private SpriteRenderer faceRenderer;
+    [SerializeField] private Renderer cardRenderer;
 
     private CardData _data;
     private LevelVisualizer _visualizer;
@@ -25,8 +25,7 @@ public class CardView : MonoBehaviour
         GameManager.Instance.RegisterCardView(this);
 
         // Set face color based on the card’s colorIndex
-        faceRenderer.color = Helper.GetColor(cardData.colorIndex);
-
+        cardRenderer.material.color = Helper.GetColor(cardData.colorIndex);
 
         // Show or hide the face/back overlay
         gameObject.SetActive(showCards);
@@ -56,6 +55,9 @@ public class CardView : MonoBehaviour
         //Debug.Log("FlyToTopSlot");
 
         transform.SetParent(targetSlot);
+
+        transform.DOLocalRotate(new Vector3(90, -90, 0), flyDuration);
+
         Tween tween= transform.DOLocalMove(Vector3.zero, flyDuration)
             .SetEase(Ease.OutQuad)
             .OnComplete(() =>
@@ -118,6 +120,7 @@ public class CardView : MonoBehaviour
 
         // reparent & animate
         transform.SetParent(slotTf);
+        transform.DOLocalRotate(Vector3.zero, flyDuration);
         transform.DOLocalMove(Vector3.zero, flyDuration).SetEase(Ease.OutQuad).OnComplete(() =>
         {
             // let the box know this card has arrived

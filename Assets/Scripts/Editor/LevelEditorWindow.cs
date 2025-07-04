@@ -7,12 +7,16 @@ using JsonUtility = UnityEngine.JsonUtility;
 using System.Linq;
 using Unity.VisualScripting;
 using log4net.Core;
+using UnityEngine.UIElements;
 
 public class LevelEditorWindow : EditorWindow
 {
     const int gridW = 8, gridH = 7;
     const float cellSize = 50f;
     const float boxScale = 0.9f;
+
+    // Editor-only palette of length currentLevel.numColors
+    private List<Color> editorPalette = new List<Color>();
 
     LevelData currentLevel;
 
@@ -21,6 +25,8 @@ public class LevelEditorWindow : EditorWindow
 
     void OnEnable()
     {
+
+
         // Initialize a blank level
         currentLevel = new LevelData
         {
@@ -48,8 +54,12 @@ public class LevelEditorWindow : EditorWindow
                     box = new BoxData(),
                     pipe = null
                 });
+
+        // Initialize the palette to a default size (match initial numColors)
+        editorPalette = Enumerable.Repeat(Color.white, currentLevel.numColors).ToList();
     }
 
+    
 
     void OnGUI()
     {
@@ -58,7 +68,27 @@ public class LevelEditorWindow : EditorWindow
         if (GUILayout.Button("Save JSON", GUILayout.Height(25))) SaveJson();
         GUILayout.EndHorizontal();
 
-        currentLevel.numColors = EditorGUILayout.IntSlider("# Colors", currentLevel.numColors, 2, 8);
+        // 1) Draw your existing slider:
+        int newNum = EditorGUILayout.IntSlider("Number of colors", currentLevel.numColors, 2, 8);
+        if (newNum != currentLevel.numColors)
+        {
+            currentLevel.numColors = newNum;
+            // Ensure the palette list matches the new length:
+            while (editorPalette.Count < newNum)
+                editorPalette.Add(Color.white);  // or any default
+            while (editorPalette.Count > newNum)
+                editorPalette.RemoveAt(editorPalette.Count - 1);
+        }
+
+        // 2) Draw the palette:
+        EditorGUILayout.LabelField("Palette:", EditorStyles.boldLabel);
+        EditorGUI.indentLevel++;
+        for (int i = 0; i < currentLevel.numColors; i++)
+        {
+            editorPalette[i] = EditorGUILayout.ColorField($"Color {i}", editorPalette[i]);
+        }
+        EditorGUI.indentLevel--;
+
         // ── Middle slot count only ──
         int targetCount = EditorGUILayout.IntSlider("Middle Slot Count", currentLevel.middleSlots.Count, 5, 7);
             while (currentLevel.middleSlots.Count < targetCount)
@@ -167,7 +197,7 @@ public class LevelEditorWindow : EditorWindow
                     cell.x + (cellSize - bs) / 2,
                     cell.y + (cellSize - bs) / 2,
                     bs, bs);
-                Color col = Helper.GetColor(pd.colorIndex);
+                Color col = GetEditorColor(pd.colorIndex);
                 EditorGUI.DrawRect(brect, col);
                 HandleClicks(slot, cell); // still allow toggling pipe parameters below
                 continue;
@@ -191,7 +221,7 @@ public class LevelEditorWindow : EditorWindow
                     bs, bs);
 
                 // Box background
-                Color col = Helper.GetColor(slot.box.colorIndex);
+                Color col = GetEditorColor(slot.box.colorIndex);
                 EditorGUI.DrawRect(brect, col);
 
                 // Ensure we have three CardData entries
@@ -209,7 +239,7 @@ public class LevelEditorWindow : EditorWindow
                         brect.y,
                         cw, cw);
                     var card = slot.box.initialCards[i];
-                    Color ccol = Helper.GetColor(card.colorIndex); 
+                    Color ccol = GetEditorColor(card.colorIndex); 
                     EditorGUI.DrawRect(crec, ccol);
                 }
             }
@@ -227,13 +257,13 @@ public class LevelEditorWindow : EditorWindow
             cellRect.x + (cellRect.width - bs) * 0.5f,
             cellRect.y + (cellRect.height - bs) * 0.5f,
             bs, bs);
-        EditorGUI.DrawRect(brect, Helper.GetColor(box.colorIndex));
+        EditorGUI.DrawRect(brect, GetEditorColor(box.colorIndex));
 
         float cw = bs / 3f;
         for (int i = 0; i < 3 && box.initialCards != null && box.initialCards.Count > i; i++)
         {
             var cr = new Rect(brect.x + i * cw, brect.y, cw, cw);
-            EditorGUI.DrawRect(cr, Helper.GetColor(box.initialCards[i].colorIndex));
+            EditorGUI.DrawRect(cr, GetEditorColor(box.initialCards[i].colorIndex));
         }
     }
     void HandleClicks(GridSlot slot, Rect cell)
@@ -420,8 +450,8 @@ public class LevelEditorWindow : EditorWindow
         Repaint();
     }
 
-    // Replaces your old DrawTopArea()
-
+  
+    /*
     private void DrawPipesUI()
     {
         GUILayout.Space(10);
@@ -449,7 +479,7 @@ public class LevelEditorWindow : EditorWindow
                         cellRect.x + (cellRect.width - bs) * 0.5f,
                         cellRect.y + (cellRect.height - bs) * 0.5f,
                         bs, bs);
-                    var boxCol = Helper.GetColor(box.colorIndex);
+                    var boxCol = GetEditorColor(box.colorIndex);
                     EditorGUI.DrawRect(brect, boxCol);
 
                     // 3) Draw its 3 inner cards
@@ -464,7 +494,7 @@ public class LevelEditorWindow : EditorWindow
                         if (box.initialCards != null && box.initialCards.Count > i)
                         {
                             var cidx = box.initialCards[i].colorIndex;
-                            EditorGUI.DrawRect(cr, Helper.GetColor(cidx));
+                            EditorGUI.DrawRect(cr, GetEditorColor(cidx));
                         }
                     }
 
@@ -508,5 +538,133 @@ public class LevelEditorWindow : EditorWindow
             Repaint();
     }
 
+    */
+
+    private void DrawPipesUI()
+    {
+        GUILayout.Space(10);
+        GUILayout.Label(
+          "Pipe Previews (click box to cycle color; click a card to cycle its color):",
+          EditorStyles.boldLabel);
+
+        var evt = Event.current;
+
+        foreach (var slot in currentLevel.gridSlots.Where(s =>
+                 s.type == SlotType.Pipe && s.pipe != null))
+        {
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Label($"Pipe @ ({slot.x},{slot.y}) count:", GUILayout.Width(120));
+
+            // ‣ 1) Resize control
+            int newCount = EditorGUILayout.IntField(
+                slot.pipe.spawnCount, GUILayout.Width(40));
+            newCount = Mathf.Max(1, newCount);
+            if (newCount != slot.pipe.spawnCount)
+            {
+                slot.pipe.spawnCount = newCount;
+                if (slot.pipe.boxes == null)
+                    slot.pipe.boxes = new List<BoxData>();
+
+                // expand
+                while (slot.pipe.boxes.Count < newCount)
+                {
+                    var b = new BoxData();
+                         // give it three default cards (color 0)
+                    b.initialCards = new List<CardData>(3);
+                         for (int k = 0; k < 3; k++)
+                        b.initialCards.Add(new CardData { colorIndex = 0 });
+                    b.colorIndex = 0;           // default box color
+                    slot.pipe.boxes.Add(b);
+                }
+                // shrink
+                while (slot.pipe.boxes.Count > newCount)
+                    slot.pipe.boxes.RemoveAt(slot.pipe.boxes.Count - 1);
+            }
+
+            // ‣ 2) Draw each queued box + its cards
+            if (slot.pipe.boxes != null)
+            {
+                foreach (var box in slot.pipe.boxes)
+                {
+                    // reserve a fixed 50×50 cell
+                    Rect cellRect = GUILayoutUtility.GetRect(
+                        50, 50,
+                        GUILayout.ExpandWidth(false),
+                        GUILayout.ExpandHeight(false)
+                    );
+
+                    // box background at 90% size
+                    float bs = cellRect.width * 0.9f;
+                    var brect = new Rect(
+                        cellRect.x + (cellRect.width - bs) * 0.5f,
+                        cellRect.y + (cellRect.height - bs) * 0.5f,
+                        bs, bs);
+                    EditorGUI.DrawRect(brect, GetEditorColor(box.colorIndex));
+
+                    // inner 3 cards
+                    float cw = bs / 3f;
+                    for (int i = 0; i < 3; i++)
+                    {
+                        var cr = new Rect(
+                            brect.x + i * cw,
+                            brect.y,
+                            cw, cw);
+                        if (box.initialCards != null && box.initialCards.Count > i)
+                            EditorGUI.DrawRect(
+                                cr,
+                                GetEditorColor(box.initialCards[i].colorIndex));
+                    }
+
+                    // ‣ 3) Click handling
+                    if (evt.type == EventType.MouseDown
+                     && cellRect.Contains(evt.mousePosition))
+                    {
+                        bool used = false;
+                        // card clicks
+                        if (box.initialCards != null)
+                        {
+                            for (int i = 0; i < 3; i++)
+                            {
+                                var cr = new Rect(
+                                    brect.x + i * cw,
+                                    brect.y,
+                                    cw, cw);
+                                if (cr.Contains(evt.mousePosition))
+                                {
+                                    box.initialCards[i].colorIndex =
+                                      (box.initialCards[i].colorIndex + 1)
+                                      % currentLevel.numColors;
+                                    used = true;
+                                    evt.Use();
+                                    break;
+                                }
+                            }
+                        }
+                        // box click
+                        if (!used)
+                        {
+                            box.colorIndex =
+                              (box.colorIndex + 1) % currentLevel.numColors;
+                            evt.Use();
+                        }
+                    }
+
+                    GUILayout.Space(5);
+                }
+            }
+
+            EditorGUILayout.EndHorizontal();
+        }
+
+        // Force immediate repaint on interaction
+        if (evt.type == EventType.MouseDown || evt.type == EventType.KeyUp)
+            Repaint();
+    }
+
+
+    private Color GetEditorColor(int colorIndex)
+    {
+        return editorPalette[colorIndex];
+    }
 
 }

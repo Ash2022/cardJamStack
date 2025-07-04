@@ -11,7 +11,16 @@ public class PipeView : MonoBehaviour
 
     internal void Initialize(PipeData pipe)
     {
-        pipeCounter.text = (pipe.boxes.Count-1).ToString();
+        pipeCounter.text = (pipe.boxes.Count).ToString();
     }
 
+    public void UpdatePipeCounter(int boxesLeft)
+    {
+        pipeCounter.text = boxesLeft.ToString();
+    }
+
+    internal void PipeCompleted()
+    {
+        pipeCounter.gameObject.SetActive(false);
+    }
 }

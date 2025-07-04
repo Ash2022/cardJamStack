@@ -56,6 +56,10 @@ public static class GameLogic
                 return true;
             }
 
+            // ✅ NEW: block pipe cells
+            if (slot.type == SlotType.Pipe)
+                return true;
+
 
             if (slot.type == SlotType.Empty)
                 return true;                  // removed cell

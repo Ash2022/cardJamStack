@@ -7,6 +7,7 @@ public class GridCellView : MonoBehaviour
 {
     [Header("Prefabs & References")]
     [SerializeField] private Transform contentParent;
+    [SerializeField] SpriteRenderer cellSprite;
 
     /// <summary>
     /// Initialize this cell according to the slot data.
@@ -40,6 +41,7 @@ public class GridCellView : MonoBehaviour
         {
             case SlotType.Empty:
                 // nothing to show
+                cellSprite.color = Color.black;
                 break;
 
             case SlotType.Box:

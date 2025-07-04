@@ -9,10 +9,11 @@ public class BoxView : MonoBehaviour
     const float FLY_TO_MIDDLE_TIME = 1f;
 
     [Header("Visual References")]
-    [SerializeField] private SpriteRenderer boxRenderer;
     [SerializeField] private GameObject questionMarkGO;
     [SerializeField] private Transform cardSlotsParent;
     [SerializeField] private Collider Collider;
+
+    [SerializeField] private Renderer boxRenderer;
 
     private BoxData _data;
 
@@ -46,13 +47,15 @@ public class BoxView : MonoBehaviour
         // 2) Hidden vs. visible coloring
         if (data.hidden)
         {
-            boxRenderer.color = Helper.GetHiddenColor();
+            boxRenderer.material.color = Helper.GetHiddenColor();
+
             questionMarkGO.SetActive(true);
         }
         else
         {
+            boxRenderer.material.color = Helper.GetColor(data.colorIndex);
+            
             questionMarkGO.SetActive(false);
-            boxRenderer.color = Helper.GetColor(data.colorIndex);
         }
 
         // Always instantiate all three cards, but only show them if unlocked & not hidden
