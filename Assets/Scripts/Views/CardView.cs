@@ -65,7 +65,7 @@ public class CardView : MonoBehaviour
                 reachedTop = true;
                 flyingToTop = false;
                 // after landing in top slot, decide if we need to continue
-                if (_data.resolvedBox != null)
+                if (_data.resolvedBox != null && _data.resolvedBox.BoxArrivedToMiddleSlot)
                 {
                     //Debug.Log("FlyToMidBox ---- CardReachedTop");
 
@@ -128,12 +128,5 @@ public class CardView : MonoBehaviour
         });
     }
 
-    /// <summary>
-    /// Tell this card which BoxView it belongs to and which slot index within that box.
-    /// </summary>
-    public void AssignBox(BoxView boxView, int slotIndex)
-    {
-        Data.resolvedBox = boxView;
-        Data.assignedMiddleSlotIndex = slotIndex;
-    }
+    
 }

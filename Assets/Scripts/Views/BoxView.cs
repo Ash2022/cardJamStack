@@ -21,8 +21,11 @@ public class BoxView : MonoBehaviour
     private int _cardsArrived;
 
     int resolvedSlotIndex = -1;
+    bool boxArrivedToMiddleSlot;
 
     public BoxData Data { get => _data; set => _data = value; }
+    public bool BoxArrivedToMiddleSlot { get => boxArrivedToMiddleSlot; set => boxArrivedToMiddleSlot = value; }
+
     List<CardView> initialCardViews = new List<CardView>();
 
     /// <summary>
@@ -33,7 +36,7 @@ public class BoxView : MonoBehaviour
     public void Initialize(BoxData data, GameObject cardPrefab)
     {
         _data = data;
-
+        boxArrivedToMiddleSlot = false;
         // the number of cards we expect to arrive is the model’s assignedCards count
         _cardsExpected = 3;
         _cardsArrived = 0;
@@ -90,9 +93,9 @@ public class BoxView : MonoBehaviour
             .SetEase(Ease.OutQuad)
             .OnComplete(() =>
             {
-                
+
                 // After box arrives, trigger each card’s flight to its top slot
-                
+                boxArrivedToMiddleSlot = true;
                 GameManager.Instance.SendBoxCardsToTop(_data);
 
                 GameManager.Instance.OnBoxArrived(this);
