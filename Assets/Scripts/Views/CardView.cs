@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ public class CardView : MonoBehaviour
     private LevelData _level;
     bool flyingToTop = false;
     bool reachedTop = false;
+    bool cardStartedResolved = false;
 
     public CardData Data { get => _data; set => _data = value; }
 
@@ -41,6 +43,13 @@ public class CardView : MonoBehaviour
     /// </summary>
     public Tween FlyToTopSlot()
     {
+        if(cardStartedResolved)
+        {
+            flyingToTop = false;
+            reachedTop = true;
+            return null;
+        }
+
         flyingToTop = true;
 
         int topIdx = _data.assignedTopSlot;
@@ -78,7 +87,7 @@ public class CardView : MonoBehaviour
 
     public void TargetBoxReachedItsMiddleSlot(BoxView boxView)
     {
-        if(flyingToTop)
+        if(flyingToTop || cardStartedResolved)
         {
             //do nothing - because its already assigned and it will resume going to the box when it reaches the top
         }
@@ -98,7 +107,7 @@ public class CardView : MonoBehaviour
     /// </summary>
     public void FlyToMiddleBox()
     {
-        if (flyingToTop)
+        if (flyingToTop || cardStartedResolved)
             return;
 
         // find the box's BoxView via the resolvedBoxID
@@ -128,5 +137,10 @@ public class CardView : MonoBehaviour
         });
     }
 
-    
+    internal void CardDoesntNeedToFlyAtAll()
+    {
+        cardStartedResolved = true;
+        Data.resolvedBox.NotifyCardArrived(this);
+
+    }
 }

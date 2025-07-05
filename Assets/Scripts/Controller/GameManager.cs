@@ -127,6 +127,29 @@ public class GameManager : MonoBehaviour
         boxData.resolved = false;
         boxData.assignedCards.Clear();
 
+        // Handle direct in-box card resolution for matching colors
+        foreach (var card in boxData.initialCards.ToList()) // iterate on copy to modify safely
+        {
+            if (card.colorIndex == boxData.colorIndex && boxData.assignedCards.Count < 3)
+            {
+                card.resolvedBox = boxView;
+                card.assignedMiddleSlotIndex = boxData.assignedCards.Count;
+                boxData.assignedCards.Add(card);
+
+                // Remove from initialCards so it's not reprocessed
+                boxData.initialCards.Remove(card);
+
+                //notify the CardView - so it doesnt need to fly anywhere
+                TryGetCardView(card.cardID, out CardView matchingCard);
+
+                if (matchingCard != null)
+                    matchingCard.CardDoesntNeedToFlyAtAll();
+
+            }
+        }
+
+
+
         /////// HANDLE PIPES
         // Handle pipe‐spawned boxes
         var clickedBox = boxView.Data;
@@ -182,8 +205,11 @@ public class GameManager : MonoBehaviour
             if (card == null || card.resolvedBox != null)
                 continue;
 
-            // find the first matching middle box with space
-            var targetBox = level.middleSlotBoxes.FirstOrDefault(b => b != null && b.colorIndex == card.colorIndex && b.assignedCards.Count < 3);
+            // find the boxes that have the most cards assigned to them and first matching middle box with space 
+            var targetBox = level.middleSlotBoxes.Where(b => b != null && b.colorIndex == card.colorIndex && b.assignedCards.Count < 3)
+            .OrderByDescending(b => b.assignedCards.Count)  // prefer fuller boxes
+            .ThenBy(b => level.middleSlotBoxes.IndexOf(b))  // stable fallback by order
+            .FirstOrDefault();
 
             if (targetBox != null)
             {
@@ -241,6 +267,14 @@ public class GameManager : MonoBehaviour
         }
 
         UpdateUnlocks();
+
+        // Check if all middle slots are full and none are resolved
+        bool allFullAndBlocked = level.middleSlotBoxes.All(b => b != null && !b.resolved);
+        if (allFullAndBlocked)
+        {
+            GameOver(false);
+            Debug.Log("Game Over: All middle boxes are blocked");
+        }
     }
 
 
