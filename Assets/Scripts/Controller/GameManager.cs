@@ -136,6 +136,10 @@ public class GameManager : MonoBehaviour
                 card.assignedMiddleSlotIndex = boxData.assignedCards.Count;
                 boxData.assignedCards.Add(card);
 
+                //not likely - but who knows
+                if (boxData.assignedCards.Count == 3)
+                    boxData.resolved = true;
+
                 // Remove from initialCards so it's not reprocessed
                 boxData.initialCards.Remove(card);
 
@@ -224,6 +228,10 @@ public class GameManager : MonoBehaviour
 
                 // remove it from the top‐slot model
                 level.topSlotsCards[i] = null;
+
+                if (targetBox.assignedCards.Count == 3)
+                    targetBox.resolved = true;
+
             }
         }
 
