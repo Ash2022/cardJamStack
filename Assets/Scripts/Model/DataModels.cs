@@ -16,6 +16,8 @@ public class LevelData
     public int levelID;
     public int numColors;
 
+    public List<string> colorNames = new List<string>();
+
     // ── replace old middleSlotCount with a list of slots ──
     public List<MiddleSlot> middleSlots;
 

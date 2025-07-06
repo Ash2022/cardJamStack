@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     bool gameOver = false;
 
     public LevelData CurrentLevelData { get; private set; }
+    public int CurrLevelIndex { get => currLevelIndex; set => currLevelIndex = value; }
 
     private void Awake()
     {
@@ -102,17 +103,10 @@ public class GameManager : MonoBehaviour
 
         // 1) Place the box into the middle‐slot model
         int midIndex = level.middleSlotBoxes.FindIndex(b => b == null);
-        if (midIndex < 0)
-            midIndex = level.middleSlotBoxes.FindIndex(b => b != null && b.resolved);
+        
         if (midIndex < 0)
         {
-            //this is not a sure lose - because maybe all the boxes are resolved - but they still didnt arrive 
-            
-            //if also all the top slots are full 
-
-
-            //GameOver(false);
-            //Debug.Log("Game Over: no free middle slot");
+            //all is full - but maybe not game over
             return;
         }
 
@@ -237,7 +231,9 @@ public class GameManager : MonoBehaviour
 
         //Debug.Log("midIndex: " + midIndex);
 
-        var slotTf = LevelVisualizer.Instance.MiddleHolder.GetChild(0).GetChild(midIndex);
+        //slot 0 of the middle boxes start locked - and this means all the boxes need to go to next index
+
+        var slotTf = LevelVisualizer.Instance.MiddleHolder.GetChild(0).GetChild(1).GetChild(midIndex);
 
         boxView.StartFlyToMiddle(slotTf, midIndex);
 

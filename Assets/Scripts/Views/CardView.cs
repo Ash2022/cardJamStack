@@ -117,7 +117,7 @@ public class CardView : MonoBehaviour
 
         // get the slot_transform inside that BoxView
         var viz = GameManager.Instance.visualizer;
-        Transform middleRoot = viz.MiddleHolder.GetChild(0);
+        Transform middleRoot = viz.MiddleHolder.GetChild(0).GetChild(1);
         Transform cellTf = middleRoot.GetChild(midIdx);
         var boxView = cellTf.GetComponentInChildren<BoxView>();
         if (boxView == null) return;

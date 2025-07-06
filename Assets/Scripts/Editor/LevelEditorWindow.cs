@@ -8,6 +8,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using log4net.Core;
 using UnityEngine.UIElements;
+using System;
 
 public class LevelEditorWindow : EditorWindow
 {
@@ -15,8 +16,16 @@ public class LevelEditorWindow : EditorWindow
     const float cellSize = 50f;
     const float boxScale = 0.9f;
 
+    private static readonly string[] NamedColors = new[]
+    {
+        "Red", "Green", "Blue", "Orange", "Yellow",
+        "Pink", "Purple", "White", "LightBlue", "Turquoise"
+    };
+
+    private string[] editorColorNames;
+
     // Editor-only palette of length currentLevel.numColors
-    private List<Color> editorPalette = new List<Color>();
+    //private List<Color> editorPalette = new List<Color>();
 
     LevelData currentLevel;
 
@@ -35,7 +44,7 @@ public class LevelEditorWindow : EditorWindow
             // default to 5 middle slots
             middleSlots = new List<MiddleSlot>()
         };
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 7; i++)
             currentLevel.middleSlots.Add(new MiddleSlot { slotID = $"M{i + 1:000}", unlocksAtLevel = 1 });
 
         // default top area
@@ -56,10 +65,15 @@ public class LevelEditorWindow : EditorWindow
                 });
 
         // Initialize the palette to a default size (match initial numColors)
-        editorPalette = Enumerable.Repeat(Color.white, currentLevel.numColors).ToList();
+        //editorPalette = Enumerable.Repeat(Color.white, currentLevel.numColors).ToList();
+
+        editorColorNames = new string[currentLevel.numColors];
+        for (int i = 0; i < editorColorNames.Length; i++)
+            editorColorNames[i] = NamedColors[i % NamedColors.Length];
+
     }
 
-    
+
 
     void OnGUI()
     {
@@ -73,28 +87,39 @@ public class LevelEditorWindow : EditorWindow
         if (newNum != currentLevel.numColors)
         {
             currentLevel.numColors = newNum;
-            // Ensure the palette list matches the new length:
-            while (editorPalette.Count < newNum)
-                editorPalette.Add(Color.white);  // or any default
-            while (editorPalette.Count > newNum)
-                editorPalette.RemoveAt(editorPalette.Count - 1);
+
+            // Resize the editorColorNames array
+            var old = editorColorNames;
+            editorColorNames = new string[newNum];
+
+            // Copy over as many old entries as possible
+            for (int i = 0; i < newNum; i++)
+            {
+                if (old != null && i < old.Length)
+                    editorColorNames[i] = old[i];
+                else
+                    // default to the first NamedColors
+                    editorColorNames[i] = NamedColors[i % NamedColors.Length];
+            }
         }
 
         // 2) Draw the palette:
-        EditorGUILayout.LabelField("Palette:", EditorStyles.boldLabel);
-        EditorGUI.indentLevel++;
+        EditorGUILayout.LabelField("Color Index Mapping:", EditorStyles.boldLabel);
         for (int i = 0; i < currentLevel.numColors; i++)
         {
-            editorPalette[i] = EditorGUILayout.ColorField($"Color {i}", editorPalette[i]);
+            int selectedIndex = Array.IndexOf(NamedColors, editorColorNames[i]);
+            if (selectedIndex < 0) selectedIndex = 0;
+
+            int newIndex = EditorGUILayout.Popup($"Color {i}", selectedIndex, NamedColors);
+            editorColorNames[i] = NamedColors[newIndex];
         }
-        EditorGUI.indentLevel--;
 
         // ── Middle slot count only ──
         int targetCount = EditorGUILayout.IntSlider("Middle Slot Count", currentLevel.middleSlots.Count, 5, 7);
-            while (currentLevel.middleSlots.Count < targetCount)
-                currentLevel.middleSlots.Add(new MiddleSlot { slotID = "", unlocksAtLevel = 1 });
-            while (currentLevel.middleSlots.Count > targetCount)
-                currentLevel.middleSlots.RemoveAt(currentLevel.middleSlots.Count - 1);
+        while (currentLevel.middleSlots.Count < targetCount)
+            currentLevel.middleSlots.Add(new MiddleSlot { slotID = "", unlocksAtLevel = 1 });
+        while (currentLevel.middleSlots.Count > targetCount)
+            currentLevel.middleSlots.RemoveAt(currentLevel.middleSlots.Count - 1);
 
         // ── Top area parameters ──
         currentLevel.numberOfRows = EditorGUILayout.IntField("Top Rows", currentLevel.numberOfRows);
@@ -157,8 +182,8 @@ public class LevelEditorWindow : EditorWindow
             Rect cell = new Rect(x, r.y, slot, slot);
             EditorGUI.DrawRect(cell, Color.white);
             GUI.Box(cell, "");
-            
-                    // editable unlock-level textbox inside the slot
+
+            // editable unlock-level textbox inside the slot
             var ms = currentLevel.middleSlots[i];
             Rect field = new Rect(cell.x + 2, cell.y + 2, cell.width - 4, cell.height - 4);
             ms.unlocksAtLevel = EditorGUI.IntField(field, ms.unlocksAtLevel);
@@ -239,7 +264,7 @@ public class LevelEditorWindow : EditorWindow
                         brect.y,
                         cw, cw);
                     var card = slot.box.initialCards[i];
-                    Color ccol = GetEditorColor(card.colorIndex); 
+                    Color ccol = GetEditorColor(card.colorIndex);
                     EditorGUI.DrawRect(crec, ccol);
                 }
             }
@@ -346,6 +371,21 @@ public class LevelEditorWindow : EditorWindow
         }
         // ────────────────────────────────────────────────────────────────────────
 
+
+        // ==== Fallback for old levels with missing colorNames ====
+        if (currentLevel.colorNames == null || currentLevel.colorNames.Count == 0)
+        {
+            currentLevel.colorNames = new List<string>();
+            for (int i = 0; i < currentLevel.numColors; i++)
+                currentLevel.colorNames.Add(NamedColors[i % NamedColors.Length]);
+        }
+
+        // Make sure numColors matches colorNames count
+        currentLevel.numColors = currentLevel.colorNames.Count;
+
+        // ✅ Sync editor UI list with loaded values
+        editorColorNames = currentLevel.colorNames.ToArray();
+
         // Force the editor to repaint and re-draw all UI (grid + pipes)
         Repaint();
     }
@@ -425,6 +465,11 @@ public class LevelEditorWindow : EditorWindow
             }
         }
 
+        //build and save color table of the level
+        // Ensure colorNames matches numColors
+        currentLevel.colorNames = new List<string>(editorColorNames.Take(currentLevel.numColors));
+
+
         // 5) Serialize to JSON
         string json = JsonUtility.ToJson(currentLevel, prettyPrint: true);
         string path = EditorUtility.SaveFilePanel("Save Level JSON", "", "level.json", "json");
@@ -450,7 +495,7 @@ public class LevelEditorWindow : EditorWindow
         Repaint();
     }
 
-  
+
     /*
     private void DrawPipesUI()
     {
@@ -569,9 +614,9 @@ public class LevelEditorWindow : EditorWindow
                 while (slot.pipe.boxes.Count < newCount)
                 {
                     var b = new BoxData();
-                         // give it three default cards (color 0)
+                    // give it three default cards (color 0)
                     b.initialCards = new List<CardData>(3);
-                         for (int k = 0; k < 3; k++)
+                    for (int k = 0; k < 3; k++)
                         b.initialCards.Add(new CardData { colorIndex = 0 });
                     b.colorIndex = 0;           // default box color
                     slot.pipe.boxes.Add(b);
@@ -664,7 +709,11 @@ public class LevelEditorWindow : EditorWindow
 
     private Color GetEditorColor(int colorIndex)
     {
-        return editorPalette[colorIndex];
+        return GetEditorColor(editorColorNames[colorIndex]);
     }
 
+    private Color GetEditorColor(string colorName)
+    {
+        return Helper.GetEditorColor(colorName);
+    }
 }

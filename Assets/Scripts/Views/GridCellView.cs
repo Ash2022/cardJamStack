@@ -1,13 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GridCellView : MonoBehaviour
 {
     [Header("Prefabs & References")]
     [SerializeField] private Transform contentParent;
     [SerializeField] SpriteRenderer cellSprite;
+
+    [SerializeField]List<GameObject> outlines = new List<GameObject>();
 
     /// <summary>
     /// Initialize this cell according to the slot data.
@@ -41,7 +45,8 @@ public class GridCellView : MonoBehaviour
         {
             case SlotType.Empty:
                 // nothing to show
-                cellSprite.color = Color.black;
+                cellSprite.color = Color.white;
+                transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, LevelVisualizer.EMPTY_ELEVATION);
                 break;
 
             case SlotType.Box:
@@ -50,6 +55,7 @@ public class GridCellView : MonoBehaviour
                     var boxGO = Instantiate(boxPrefab, contentParent);
                     var bv = boxGO.GetComponent<BoxView>();
                     bv.Initialize(slot.box, cardPrefab);
+                    cellSprite.sprite = LevelVisualizer.Instance.CellFullSprite;
                 }
                 break;
 
@@ -59,9 +65,24 @@ public class GridCellView : MonoBehaviour
                     var pipeGO = Instantiate(pipePrefab, contentParent);
                     var pv = pipeGO.GetComponent<PipeView>();
                     pv.Initialize(slot.pipe);
+                    cellSprite.sprite = LevelVisualizer.Instance.CellFullSprite;
                 }
                 break;
         }
     }
 
+    public void SetOutlineVisibility(List<bool> visibility)
+    {
+        if (outlines == null || outlines.Count != 4)
+        {
+            Debug.LogWarning("GridCellView: Outline list is missing or incorrect size.");
+            return;
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (outlines[i] != null)
+                outlines[i].SetActive(visibility[i]);
+        }
+    }
 }

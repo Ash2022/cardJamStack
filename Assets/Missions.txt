@@ -306,14 +306,202 @@ send it to the visualizer for building and than start the game.
 make me those 2 classes
 
 
+this is our current PlayBox method - public void PlayBox(BoxView boxView)
+{
+    var level = CurrentLevelData;
+    var boxData = boxView.Data;
 
+    // 1) Place the box into the middle‐slot model
+    int midIndex = level.middleSlotBoxes.FindIndex(b => b == null);
+    if (midIndex < 0)
+        midIndex = level.middleSlotBoxes.FindIndex(b => b != null && b.resolved);
+    if (midIndex < 0)
+    {
+        //this is not a sure lose - because maybe all the boxes are resolved - but they still didnt arrive 
+        
+        //if also all the top slots are full 
+
+
+        //GameOver(false);
+        //Debug.Log("Game Over: no free middle slot");
+        return;
+    }
+
+    // 0) Remove the box from its grid slot
+    var gridSlot = level.gridSlots.FirstOrDefault(s => s.type == SlotType.Box && s.box != null && s.box.boxID == boxData.boxID);
+
+    if (gridSlot != null)
+        gridSlot.box = null;
+
+
+    level.middleSlotBoxes[midIndex] = boxData;
+    boxData.resolved = false;
+    boxData.assignedCards.Clear();
+
+    /////// HANDLE PIPES
+    // Handle pipe‐spawned boxes
+    var clickedBox = boxView.Data;
+    Vector2Int exitPos;
+    GridSlot pipeSlot = level.gridSlots
+        .FirstOrDefault(s =>
+            s.type == SlotType.Pipe &&
+            s.pipe != null &&
+            s.pipe.boxes.Contains(clickedBox));
+
+    if (pipeSlot != null)
+    {
+        // For pipe‐spawned boxes, the exit is one row *above* the pipe:
+        exitPos = new Vector2Int(pipeSlot.x, pipeSlot.y - 1);
+    }
+    else
+    {
+        // Normal grid box:
+        exitPos = clickedBox.gridPosition;
+    }
+
+    // 1) Remove the box from its grid cell *in the model*
+    //    (we do this *before* animation, but we do NOT touch the type or respawn yet)
+    var exitSlot = level.gridSlots.First(s => s.x == exitPos.x && s.y == exitPos.y);
+    exitSlot.box = null;
+
+    //end handle pipe
+
+
+    // 2) Distribute this box’s cards into the top‐slot model
+    foreach (var card in boxData.initialCards)
+    {
+        int topIndex = level.topSlotsCards.FindIndex(c => c == null);
+        if (topIndex < 0)
+            topIndex = level.topSlotsCards.FindIndex(c => c != null && c.resolvedBox != null);
+        
+        if (topIndex < 0)
+        {
+            GameOver(false);
+            Debug.Log("Game Over: no free top slot");
+            return;
+        }
+
+        level.topSlotsCards[topIndex] = card;
+        card.assignedTopSlot = topIndex;
+        card.resolvedBox = null;
+    }
+
+    // 3) Resolve any top‐slot cards against the updated middle‐slot model
+    for (int i = 0; i < level.topSlotsCards.Count; i++)
+    {
+        var card = level.topSlotsCards[i];
+        if (card == null || card.resolvedBox != null)
+            continue;
+
+        // find the first matching middle box with space
+        var targetBox = level.middleSlotBoxes.FirstOrDefault(b => b != null && b.colorIndex == card.colorIndex && b.assignedCards.Count < 3);
+
+        if (targetBox != null)
+        {
+            // assign card to that box in the model
+            TryGetBoxView(targetBox.boxID, out BoxView bv);
+
+            if(bv!=null)
+                card.resolvedBox = bv;
+            
+            card.assignedMiddleSlotIndex = targetBox.assignedCards.Count;
+            targetBox.assignedCards.Add(card);
+
+            // remove it from the top‐slot model
+            level.topSlotsCards[i] = null;
+        }
+    }
+
+    //Debug.Log("midIndex: " + midIndex);
+
+    var slotTf = LevelVisualizer.Instance.MiddleHolder.GetChild(0).GetChild(midIndex);
+
+    boxView.StartFlyToMiddle(slotTf, midIndex);
+
+
+    if (pipeSlot != null)
+    {
+        // pop the clicked box from the pipe’s queue
+        pipeSlot.pipe.boxes.Remove(clickedBox);
+
+        GridCellView pipeCellView = LevelVisualizer.Instance.GetGridCellView(pipeSlot.x, pipeSlot.y);
+
+        PipeView pipeView = pipeCellView.GetComponentInChildren<PipeView>();
+
+        // if there’s another in the queue, spawn it into exitSlot
+        if (pipeSlot.pipe.boxes.Count > 0)
+        {
+            var nextBox = pipeSlot.pipe.boxes[0];
+            nextBox.gridPosition = exitPos;
+            exitSlot.type = SlotType.Box;
+            exitSlot.box = nextBox;               
+
+            pipeView.UpdatePipeCounter(pipeSlot.pipe.boxes.Count);
+
+        }
+        else
+        {
+            // pipe is drained: leave exitSlot.box null but passable
+            pipeView.PipeCompleted();
+            exitSlot.type = SlotType.Box;
+        }
+
+        // re‐draw that one grid cell
+        var cellView = visualizer.GetGridCellView(exitPos.x, exitPos.y);
+        cellView.Initialize(exitSlot, visualizer.BoxPrefab, visualizer.PipePrefab, visualizer.CardPrefab);
+    }
+
+    UpdateUnlocks();
+}   
+
+
+I want to improve a couple of things: 
+1. i want the cards assignment to first try to go to boxes that already have some cards on them and not pick the first one based only on index,
+it should be first of all the full most one and than index.
+
+2. if a box is played, and 1 or more of its cards already can resolve this box (same color index), we can completly skip the card assignment to top and back
+to the box and instead just update the model all the way so it stays in the box.
+
+3. add at the end - after the box is resolved a check for GameOver - if all the middle slots are full and all the boxes in them are not resolved - Game is over.
+
+for all those things give me only the changes
  
 
  ToDo:
- 1. blender
- 2. check game over when trying to put box and no top spaces.
- 3. center the grid based on how many full are in the top X row.
- 4. index offseter for the colors
+ 1. blender - DONE
+ 2. check game over when trying to put box and no top spaces.------------------------------------  DONE
+ 3. center the grid based on how many full are in the top X row.------------------------------
+ 4. index offseter for the colors ------------------------------
  5. fix pipe display and visuals --- DONE
- 6. unlocks - comes after the level loads
+ 6. unlocks - comes after the level loads --------------------------------
  7. level5 - data defect -- DONE
+
+ 8. need to make it that if you come with a card in your color - it doesnt go out 
+ it doesnt need to look for top slot, it is just resolved. ---------------------------------------- DONE
+
+ 9. when detecting a game over - need to play the box to the position ???????????????????
+
+ 10. need to also detect that there are no space for boxes -----------------------------  DONE
+
+ 11. on level 11 - the top slots already become 8 - look on other levels as well and make same ---------------------
+
+ 12. consider making grid size cells change based on width and height ????????????????????????????
+
+ 13. when you do the cards assignments to boxes - try to first fill boxes that match the color and already have the most assigned to them.-------------------- DONE
+
+
+
+ i want to expand another thing in the levelEditor, we now have the color slots - and we can assign colors from the picker.
+ i want something little differet - i want to have a list of colors:
+ red,green,blue,orange,yellow,pink,purple,white,lightBlue,torquize --- 10 colors
+ instead of color picker for each slot of color like we have now - each color slot should have a drop down of the colors list given above.
+ so you assign a colorIndex a color from the list.
+
+ than we need to add another method that will get color name from the list and will return a color to match it.
+
+ we first modify this in the editor - later we will expand this also to the game - because i want this cahnge 
+ to also be in the game levels - so in level1 color index 0 is red - and in level 2 color index 0 is green.
+
+ understood? clear? 
+
+ give me the changes for editor
