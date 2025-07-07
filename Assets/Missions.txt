@@ -505,3 +505,13 @@ for all those things give me only the changes
  understood? clear? 
 
  give me the changes for editor
+
+
+
+
+ visuals:
+
+ 1. start locked box at 0.5Z.
+ 2. Make cards appear 1 by 1 in the box.
+ 3. make the flight of box to the middle with Z going up and a full 360 on the X axis.
+ 4. make the cards fly out in the middle of the box flight and not when reaching the mid slot.

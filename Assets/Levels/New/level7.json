@@ -1,6 +1,12 @@
 {
     "levelID": 0,
     "numColors": 4,
+    "colorNames": [
+        "Red",
+        "Green",
+        "Blue",
+        "Orange"
+    ],
     "middleSlots": [
         {
             "slotID": "M001",

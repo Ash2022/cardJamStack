@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class BoxView : MonoBehaviour
 {
-    const float FLY_TO_MIDDLE_TIME = 1f;
+    const float FLY_TO_MIDDLE_TIME = 1.25f;
+    const float CARD_SHOW_DELAY = 0.1f;
 
     [Header("Visual References")]
     [SerializeField] private GameObject questionMarkGO;
@@ -73,6 +74,11 @@ public class BoxView : MonoBehaviour
             initialCardViews.Add(cv);
             cv.Initialize(cData, showCards);
         }
+
+        //locked boxes are 50% on Z
+        if(unlocked == false)
+            transform.localScale = new Vector3(1, 1, 0.5f);
+        
     }
 
     /// <summary>
@@ -88,18 +94,52 @@ public class BoxView : MonoBehaviour
         // Reparent so localPosition = zero lands at slot center
         transform.SetParent(middleSlotTransform);
 
-        // Animate local position to (0,0,0)
-        transform.DOLocalMove(Vector3.zero, FLY_TO_MIDDLE_TIME)
-            .SetEase(Ease.OutQuad)
-            .OnComplete(() =>
-            {
+        Vector3 startPos = transform.localPosition;
+        Vector3 endPos = Vector3.zero;
+        float middleZ = -3.5f;
+        float totalTime = FLY_TO_MIDDLE_TIME;
 
-                // After box arrives, trigger each card’s flight to its top slot
-                boxArrivedToMiddleSlot = true;
-                GameManager.Instance.SendBoxCardsToTop(_data);
+        float midX = startPos.x + (endPos.x - startPos.x) * (4f / 5f);
+        float midY = (startPos.y + endPos.y) * 0.5f; // still center vertically
+        Vector3 midPos = new Vector3(midX, midY, middleZ);
 
-                GameManager.Instance.OnBoxArrived(this);
-            });
+        Vector3 dir = endPos - startPos;
+        float angleZ = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+        // Sequence
+        var seq = DOTween.Sequence();
+
+        // First half — move to midpoint & rotate
+        seq.Append(transform.DOLocalMove(midPos, totalTime * 0.5f).SetEase(Ease.OutSine));
+        seq.Join(transform.DOLocalRotate(new Vector3(120f, 0f, angleZ), totalTime * 0.5f, RotateMode.FastBeyond360).SetEase(Ease.Linear));
+
+
+        // 🔔 Midpoint reached
+        seq.AppendCallback(() =>
+        {
+            Debug.Log("Reached midpoint!");
+            // Do whatever you want here
+            GameManager.Instance.SendBoxCardsToTop(_data);
+        });
+
+        // Second half — move to end & finish rotation
+        seq.Append(transform.DOLocalMove(endPos, totalTime * 0.5f).SetEase(Ease.InSine));
+        seq.Join(transform.DOLocalRotate(new Vector3(360f, 0f, 0f), totalTime * 0.5f, RotateMode.Fast).SetEase(Ease.Linear));
+
+        // 🔔 Final position reached
+        seq.OnComplete(() =>
+        {
+            Debug.Log("Reached final position!");
+            // Final callback logic
+
+            // After box arrives, trigger each card’s flight to its top slot
+            boxArrivedToMiddleSlot = true;
+            
+
+            GameManager.Instance.OnBoxArrived(this);
+
+        });
+       
     }
 
     /// <summary>
@@ -126,11 +166,11 @@ public class BoxView : MonoBehaviour
     internal void BoxViewUnblocked()
     {
         //if the box was hidden - show its color
-
+        transform.DOScale(Vector3.one,0.15f).SetEase(Ease.OutElastic);
         //show the cards
 
         for (int i = 0; i < initialCardViews.Count; i++)
-            initialCardViews[i].BoxWasUnlocked();
+            initialCardViews[i].BoxWasUnlocked(CARD_SHOW_DELAY*i);
         
     }
 
@@ -149,15 +189,26 @@ public class BoxView : MonoBehaviour
 
     private void StartDisappear()
     {
-        //Debug.Log(transform);
+        var seq = DOTween.Sequence();
 
-        // tween scale to zero
-        transform.DOScale(Vector3.zero, 1)
-            .SetEase(Ease.InBack)
-            .OnComplete(() =>
-            {
-                // notify GameManager to clean up model & view
-                GameManager.Instance.OnBoxCompleted(this, resolvedSlotIndex);
-            });
+        // 1. Scale down to 0
+        seq.Join(transform.DOScale(Vector3.zero, 1f).SetEase(Ease.InBack));
+
+        // 2. Rotate 360° around Z
+        seq.Join(transform.DOLocalRotate(
+            new Vector3(0f, 0f, 360f),
+            1f,
+            RotateMode.FastBeyond360
+        ).SetEase(Ease.InOutSine));
+
+        // 3. Small hop up on Z (relative by 1 unit)
+        Vector3 startPos = transform.localPosition;
+        Vector3 endPos = startPos + new Vector3(0f, 0f, 1f);
+        seq.Join(transform.DOLocalMove(endPos, -1.5f).SetEase(Ease.InOutSine));
+
+        seq.OnComplete(() =>
+        {
+            GameManager.Instance.OnBoxCompleted(this, resolvedSlotIndex);
+        });
     }
 }

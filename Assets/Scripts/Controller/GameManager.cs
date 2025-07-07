@@ -288,11 +288,14 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void SendBoxCardsToTop(BoxData boxData)
     {
-        
+        float addedTime = 0;
+
         foreach (var card in boxData.initialCards)
         {
             if (_cardViewsByID.TryGetValue(card.cardID, out var cv))
-                cv.FlyToTopSlot();
+                cv.FlyToTopSlot(addedTime);
+
+            addedTime += 0.1f;
         }
     }
 
@@ -383,6 +386,9 @@ public class GameManager : MonoBehaviour
         if (slotIndex >= 0 && slotIndex < CurrentLevelData.middleSlotBoxes.Count)
             CurrentLevelData.middleSlotBoxes[slotIndex] = null;
 
+        //instantiate the dissappear effect
+        GenerateBoxDisappearEffect(boxView);
+
         // 2) destroy view
         Destroy(boxView.gameObject);
 
@@ -398,7 +404,47 @@ public class GameManager : MonoBehaviour
         {
             GameOver(true);
         }
+    }
 
+    private void GenerateBoxDisappearEffect(BoxView boxView)
+    {
+        GameObject disappearEffect = Instantiate(LevelVisualizer.Instance.DisappearEffect, LevelVisualizer.Instance.MiddleHolder);
+        disappearEffect.transform.localPosition = boxView.transform.parent.transform.localPosition;
+        MergeParticleView mergeParticleView = disappearEffect.GetComponent<MergeParticleView>();
+
+        Color baseColor = Helper.GetColor(boxView.Data.colorIndex);
+
+        // Create a lighter version (25% toward white)
+        Color lighter = Color.Lerp(baseColor, Color.white, 0.25f);
+
+        // Create gradient 1
+        Gradient grad1 = new Gradient();
+        grad1.SetKeys(
+            new GradientColorKey[] {
+            new GradientColorKey(baseColor, 0f),
+            new GradientColorKey(lighter, 1f)
+            },
+            new GradientAlphaKey[] {
+            new GradientAlphaKey(baseColor.a, 0f),
+            new GradientAlphaKey(lighter.a, 1f)
+            }
+        );
+
+        // Create gradient 2 (same logic — or you can customize it if needed)
+        Gradient grad2 = new Gradient();
+        grad2.SetKeys(
+            new GradientColorKey[] {
+            new GradientColorKey(baseColor, 0f),
+            new GradientColorKey(lighter, 1f)
+            },
+            new GradientAlphaKey[] {
+            new GradientAlphaKey(baseColor.a, 0f),
+            new GradientAlphaKey(lighter.a, 1f)
+            }
+        );
+
+
+        mergeParticleView.InitParticles(0.1f, baseColor, grad1, grad2);
     }
 
     /// <summary>

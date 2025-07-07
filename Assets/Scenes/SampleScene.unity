@@ -1231,7 +1231,7 @@ MonoBehaviour:
   BoxPrefab: {fileID: 1380478835570702811, guid: 71cf7729107e3a84ab6837f8f985c04d, type: 3}
   PipePrefab: {fileID: 9095795719045777831, guid: c93d978b15c4de6428d88b5e8e6594e0, type: 3}
   CardPrefab: {fileID: 5230596757747328997, guid: 7705d785616b4d347ad2ed80d1e28768, type: 3}
-  testLevelJson: {fileID: 4900000, guid: 03ac8c6c4f5e4cd4c9cea05ee54eed38, type: 3}
+  disappearEffect: {fileID: 3223031359271505891, guid: 155410a7086d1d34ca48c448dfc33156, type: 3}
   cellFullSprite: {fileID: 21300000, guid: 124445e7b2e30f64fbada5244db6773f, type: 3}
 --- !u!4 &1694372641
 Transform:
@@ -1285,7 +1285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43539611c795e9948b5be745c5e726dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currLevelIndex: 0
+  currLevelIndex: 1
   visualizer: {fileID: 1694372640}
   gameOverView: {fileID: 1488288058}
   inGameUIView: {fileID: 1146125452}

@@ -1,10 +1,14 @@
 {
     "levelID": 0,
     "numColors": 2,
+    "colorNames": [
+        "Red",
+        "Green"
+    ],
     "middleSlots": [
         {
             "slotID": "M001",
-            "unlocksAtLevel": 1
+            "unlocksAtLevel": 15
         },
         {
             "slotID": "M002",
@@ -21,6 +25,14 @@
         {
             "slotID": "M005",
             "unlocksAtLevel": 1
+        },
+        {
+            "slotID": "",
+            "unlocksAtLevel": 1
+        },
+        {
+            "slotID": "",
+            "unlocksAtLevel": 25
         }
     ],
     "numberOfRows": 2,

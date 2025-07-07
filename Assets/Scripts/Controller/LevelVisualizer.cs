@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -42,12 +43,13 @@ public class LevelVisualizer : MonoBehaviour
 
     private Dictionary<Vector2Int, GridCellView> _cellViews;
 
-    [Header("Test Level")]
-    [SerializeField] private TextAsset testLevelJson;  // ← add this
+    [Header("Effects")]
+    [SerializeField] private GameObject disappearEffect;  // ← add this
 
     [SerializeField] Sprite cellFullSprite;
 
     public Sprite CellFullSprite { get => cellFullSprite; set => cellFullSprite = value; }
+    public GameObject DisappearEffect { get => disappearEffect; set => disappearEffect = value; }
 
     void Awake()
     {
@@ -106,6 +108,24 @@ public class LevelVisualizer : MonoBehaviour
         var topRoot = Instantiate(TopHolderPrefab, TopHolder);
         var middleRoot = Instantiate(MiddleHolderPrefab, MiddleHolder);
         var gridRoot = Instantiate(GridHolderPrefab, GridHolder);
+
+        //center grid based on the top row data
+
+        var boxSlots = level.gridSlots.Where(s => s.y == 0 && s.box.boxID != "").ToList();
+        int delta = 0;
+        float centerX = 0;
+        int minX = 0;
+
+        if (boxSlots.Count > 0)
+        {
+            minX = boxSlots.Min(s => s.x);
+            int maxX = boxSlots.Max(s => s.x);
+            delta = maxX - minX;
+            centerX = (minX + maxX) / 2f;
+            Debug.Log($"Boxes at y=0: minX = {minX}, maxX = {maxX}, delta = {delta}");
+        }
+
+        
 
         // 3 Top area positioning under Row1 and Row2
         Transform row1 = topRoot.transform.Find("Row1");
@@ -181,6 +201,7 @@ public class LevelVisualizer : MonoBehaviour
             // position so (0,0) is at top-left of frame, y increases downward
             slotGO.transform.localPosition = originOffset + new Vector3(slot.x * gridCellSize.x, -slot.y * gridCellSize.y, 0f);
 
+            slotGO.name = "Cell: " + slot.x+"_"+slot.y;
             // (rest of your slot initialization here)
             var cellView = slotGO.GetComponent<GridCellView>();
             cellView.Initialize(slot, BoxPrefab, PipePrefab,CardPrefab);
@@ -188,7 +209,14 @@ public class LevelVisualizer : MonoBehaviour
 
             var outline = ComputeOutline(new Vector2Int(slot.x, slot.y), slotLookup, gridWidth, gridHeight);
             cellView.SetOutlineVisibility(outline);
+
+            
         }
+
+        centerX = originOffset.x + centerX * CELL_SIZE;
+
+        GridHolder.transform.localPosition = new Vector3(-centerX, GridHolder.transform.localPosition.y, GridHolder.transform.localPosition.z);
+
 
         // ─── Add dummy visual border cells ──────────────────────────────────────────
         gridCellSize = new Vector2(0.7f, 0.7f); // ensure fixed size
@@ -219,6 +247,8 @@ public class LevelVisualizer : MonoBehaviour
                 GameObject dummyGO = Instantiate(GridSlotPrefab, gridRoot.transform);
                 dummyGO.transform.localPosition = originOffset +
                     new Vector3((x + 2) * gridCellSize.x, -(y) * gridCellSize.y-1.05f, EMPTY_ELEVATION);
+
+                dummyGO.name = "Dummy_" + pos;
 
                 var dummyView = dummyGO.GetComponent<GridCellView>();
                 
@@ -263,7 +293,7 @@ public class LevelVisualizer : MonoBehaviour
     {
         if(slotLookup.TryGetValue(pos, out var slot))
         {
-            if(slot.box.boxID!="")
+            if(slot.box.boxID!="" || slot.pipe.spawnCount>0)
             {
                 List<bool> emptyOutline = new List<bool>();
 

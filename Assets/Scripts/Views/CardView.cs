@@ -30,18 +30,27 @@ public class CardView : MonoBehaviour
         cardRenderer.material.color = Helper.GetColor(cardData.colorIndex);
 
         // Show or hide the face/back overlay
+        if (showCards)
+            transform.localScale = Vector3.one;
+        else
+            transform.localScale = new Vector3(1, 1, 0);
+
         gameObject.SetActive(showCards);
     }
 
-    public void BoxWasUnlocked()
+    public void BoxWasUnlocked(float delay)
     {
         gameObject.SetActive(true);
+
+        transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutElastic).SetDelay(delay);
     }
 
     /// <summary>
     /// Fly this card into its assigned top‐slot.
+    /// using added time so that all the cards leave at the same time as the box continues to spin 
+    /// so to make variation i just tweek the animation time a little between the cards
     /// </summary>
-    public Tween FlyToTopSlot()
+    public Tween FlyToTopSlot(float addedTime)
     {
         if(cardStartedResolved)
         {
@@ -65,10 +74,10 @@ public class CardView : MonoBehaviour
 
         transform.SetParent(targetSlot);
 
-        transform.DOLocalRotate(new Vector3(90, -90, 0), flyDuration);
+        transform.DOLocalRotate(new Vector3(90, -90, 0), flyDuration+ addedTime);
 
-        Tween tween= transform.DOLocalMove(Vector3.zero, flyDuration)
-            .SetEase(Ease.OutQuad)
+        Tween tween= transform.DOLocalMove(Vector3.zero, flyDuration+ addedTime)
+            .SetEase(Ease.OutCubic)
             .OnComplete(() =>
             {
                 reachedTop = true;
