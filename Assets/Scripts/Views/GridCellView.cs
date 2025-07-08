@@ -13,6 +13,8 @@ public class GridCellView : MonoBehaviour
 
     [SerializeField]List<GameObject> outlines = new List<GameObject>();
 
+    [SerializeField] List<GameObject> corners = new List<GameObject>();
+
     /// <summary>
     /// Initialize this cell according to the slot data.
     /// </summary>
@@ -83,6 +85,29 @@ public class GridCellView : MonoBehaviour
         {
             if (outlines[i] != null)
                 outlines[i].SetActive(visibility[i]);
+
+            //corners order 
+            //top left
+            //top right
+            //bottom left
+            //bottom right
+
+            //top and left are set - enable that corner
+            if (visibility[0] && visibility[2])
+                corners[0].SetActive(true);
+
+            //top and right are set - enable that corner
+            if (visibility[0] && visibility[3])
+                corners[1].SetActive(true);
+
+            //bottom left - 
+            if (visibility[1] && visibility[2])
+                corners[2].SetActive(true);
+
+            //bottom right - 
+            if (visibility[1] && visibility[3])
+                corners[3].SetActive(true);
+
         }
     }
 }

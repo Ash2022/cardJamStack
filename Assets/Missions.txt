@@ -515,3 +515,48 @@ for all those things give me only the changes
  2. Make cards appear 1 by 1 in the box.
  3. make the flight of box to the middle with Z going up and a full 360 on the X axis.
  4. make the cards fly out in the middle of the box flight and not when reaching the mid slot.
+
+ Tutorial - 
+ Tap the <Boxes> to sort
+ <Cards> by matching colors!
+
+ shows hand on all first 6 clicks
+
+
+
+ 1. Tutorial ---------------------------------->>>>>> DONE
+ 2. haptics --- DONE
+    a. when playing a box
+    b. when resolving a box
+    c. game over
+ 3. sfx --- STILL NOT CALLING THE SFX THEMSELVES   ---- DONE
+ 4. save level in player prefs and load from it --- DONE
+ 5. levels  ---------------------------------->>>>>>
+ 6. loop cycle --- DONE
+ 7. hidden card ---------------------------------->>>>>> DONE
+ 8. aspects --- DONE
+ 9.store ---------------------------------->>>>>>
+ 10.fb  ---------------------------------->>>>>>
+ 11. win screen  --- DONE
+ 12. lose screen --- DONE
+ 13. lose timing on fill all boxes ---- DONE
+ 14. unlock screens visuals --- DONE
+
+ 11. fix the cell cover sides - need to think of a nice way  ------------------------>>>>>>>>  DONE - NEW CORNERS FROM NINA
+
+
+
+
+
+
+
+
+
+ Stuff i need from Nina
+
+ 1. hidden question mark
+ 2. a gray box for hidden
+ 3. the outline for the grid
+
+ Bezi
+ MCPServer

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LevelVisualizer : MonoBehaviour
 {
-    public const float EMPTY_ELEVATION = -0.15f;
+    public const float EMPTY_ELEVATION = -0.1f;
     const float MIDDLE_SLOT_SPACING = 0.15f;
     //const float TOP_SLOT_SPACING = 0.05f;
 
@@ -48,6 +48,12 @@ public class LevelVisualizer : MonoBehaviour
 
     [SerializeField] Sprite cellFullSprite;
 
+    [Header("Materials")]
+    [SerializeField] List<Material> cardMaterials;
+    [SerializeField] List<Material> boxMaterials;
+
+
+
     public Sprite CellFullSprite { get => cellFullSprite; set => cellFullSprite = value; }
     public GameObject DisappearEffect { get => disappearEffect; set => disappearEffect = value; }
 
@@ -75,7 +81,7 @@ public class LevelVisualizer : MonoBehaviour
         if (level.middleSlotBoxes == null || level.middleSlotBoxes.Count != midCount)
             level.middleSlotBoxes = Enumerable.Repeat<BoxData>(null, midCount).ToList();
 
-        int topCount = level.numberOfRows * level.numberOfTopSlotsPerRow+4;
+        int topCount = level.numberOfRows * level.numberOfTopSlotsPerRow;
         if (level.topSlotsCards == null || level.topSlotsCards.Count != topCount)
             level.topSlotsCards = Enumerable.Repeat<CardData>(null, topCount).ToList();
 
@@ -122,7 +128,7 @@ public class LevelVisualizer : MonoBehaviour
             int maxX = boxSlots.Max(s => s.x);
             delta = maxX - minX;
             centerX = (minX + maxX) / 2f;
-            Debug.Log($"Boxes at y=0: minX = {minX}, maxX = {maxX}, delta = {delta}");
+            //Debug.Log($"Boxes at y=0: minX = {minX}, maxX = {maxX}, delta = {delta}");
         }
 
         
@@ -131,7 +137,7 @@ public class LevelVisualizer : MonoBehaviour
         Transform row1 = topRoot.transform.Find("Row1");
         Transform row2 = topRoot.transform.Find("Row2");
 
-        int cols = level.numberOfTopSlotsPerRow+2;
+        int cols = level.numberOfTopSlotsPerRow;
 
         float space = (TOP_TOTAL_WIDTH - TOP_CELL_WIDTH * cols) / (cols + 1);
         
@@ -144,7 +150,7 @@ public class LevelVisualizer : MonoBehaviour
         {
             GameObject slotGO = Instantiate(TopSlotPrefab, row1);
             //slotGO.transform.localPosition = row1Offset + new Vector3(col * row1SlotSize.x, 0f, 0f);
-            slotGO.transform.localPosition = topOriginOffset+new Vector3(col * (TOP_CELL_WIDTH + space)+space, 0f, 0f);
+            slotGO.transform.localPosition = topOriginOffset+new Vector3(col * (TOP_CELL_WIDTH + space)+space, 0.25f, 0f);
         }
 
         // Instantiate second row slots
@@ -153,7 +159,7 @@ public class LevelVisualizer : MonoBehaviour
             GameObject slotGO = Instantiate(TopSlotPrefab, row2);
             //slotGO.transform.localPosition = row2Offset + new Vector3(col * row2SlotSize.x, 0f, 0f);
 
-            slotGO.transform.localPosition = topOriginOffset+new Vector3(col * (TOP_CELL_WIDTH   + space)+space, 0f, 0f);
+            slotGO.transform.localPosition = topOriginOffset+new Vector3(col * (TOP_CELL_WIDTH   + space)+space, 0.25f, 0f);
         }
 
         // Middle area
@@ -377,5 +383,69 @@ public class LevelVisualizer : MonoBehaviour
 
         return outline;
     }
+
+    public Material GetCardMaterialByColorIndex(int colorIndex)
+    {
+        string colorName = GameManager.Instance.CurrentLevelData.colorNames[colorIndex];
+
+        return colorName switch
+        {
+            "Red" => cardMaterials[0],
+            "Green" => cardMaterials[1],
+            "Blue" => cardMaterials[2],
+            "Orange" => cardMaterials[3],
+            "Yellow" => cardMaterials[4],
+            "Pink" => cardMaterials[5],
+            "Purple" => cardMaterials[6],
+            "White" => cardMaterials[7],
+            "LightBlue" => cardMaterials[8],
+            "Turquoise" => cardMaterials[9],
+            _ => cardMaterials[10],
+        };
+    }
+
+    public Material GetBoxMaterialByColorIndex(int colorIndex)
+    {
+        string colorName = GameManager.Instance.CurrentLevelData.colorNames[colorIndex];
+
+        return colorName switch
+        {
+            "Red" => boxMaterials[0],
+            "Green" => boxMaterials[1],
+            "Blue" => boxMaterials[2],
+            "Orange" => boxMaterials[3],
+            "Yellow" => boxMaterials[4],
+            "Pink" => boxMaterials[5],
+            "Purple" => boxMaterials[6],
+            "White" => boxMaterials[7],
+            "LightBlue" => boxMaterials[8],
+            "Turquoise" => boxMaterials[9],
+            _ => boxMaterials[10],
+        };
+    }
+
+    public Material GetHiddenMaterial()
+    {
+        return boxMaterials[10];
+    }
+
+    public static Color GetEditorColor(string colorName)
+    {
+        return colorName switch
+        {
+            "Red" => Color.red,
+            "Green" => Color.green,
+            "Blue" => Color.blue,
+            "Orange" => new Color(1f, 0.5f, 0f),
+            "Yellow" => Color.yellow,
+            "Pink" => new Color(1f, 0.4f, 0.7f),
+            "Purple" => new Color(0.6f, 0.2f, 0.7f),
+            "White" => Color.white,
+            "LightBlue" => new Color(0.5f, 0.8f, 1f),
+            "Turquoise" => new Color(0.3f, 1f, 0.9f),
+            _ => Color.gray,
+        };
+    }
+
 
 }

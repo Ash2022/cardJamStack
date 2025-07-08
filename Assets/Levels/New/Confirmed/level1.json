@@ -1,0 +1,1388 @@
+{
+    "levelID": 0,
+    "numColors": 2,
+    "colorNames": [
+        "Orange",
+        "LightBlue"
+    ],
+    "middleSlots": [
+        {
+            "slotID": "M001",
+            "unlocksAtLevel": 15
+        },
+        {
+            "slotID": "M002",
+            "unlocksAtLevel": 1
+        },
+        {
+            "slotID": "M003",
+            "unlocksAtLevel": 1
+        },
+        {
+            "slotID": "M004",
+            "unlocksAtLevel": 1
+        },
+        {
+            "slotID": "M005",
+            "unlocksAtLevel": 1
+        },
+        {
+            "slotID": "M006",
+            "unlocksAtLevel": 1
+        },
+        {
+            "slotID": "M007",
+            "unlocksAtLevel": 25
+        }
+    ],
+    "numberOfRows": 2,
+    "numberOfTopSlotsPerRow": 7,
+    "gridSlots": [
+        {
+            "x": 0,
+            "y": 0,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 0,
+            "y": 1,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 0,
+            "y": 2,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 0,
+            "y": 3,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 0,
+            "y": 4,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 0,
+            "y": 5,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 0,
+            "y": 6,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 1,
+            "y": 0,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 1,
+            "y": 1,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 1,
+            "y": 2,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 1,
+            "y": 3,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 1,
+            "y": 4,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 1,
+            "y": 5,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 1,
+            "y": 6,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 2,
+            "y": 0,
+            "type": 1,
+            "box": {
+                "boxID": "B001",
+                "gridPosition": {
+                    "x": 2,
+                    "y": 0
+                },
+                "colorIndex": 1,
+                "hidden": false,
+                "initialCards": [
+                    {
+                        "cardID": "B001_C1",
+                        "colorIndex": 0,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    },
+                    {
+                        "cardID": "B001_C2",
+                        "colorIndex": 0,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    },
+                    {
+                        "cardID": "B001_C3",
+                        "colorIndex": 0,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    }
+                ],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 2,
+            "y": 1,
+            "type": 1,
+            "box": {
+                "boxID": "B002",
+                "gridPosition": {
+                    "x": 2,
+                    "y": 1
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [
+                    {
+                        "cardID": "B002_C1",
+                        "colorIndex": 1,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    },
+                    {
+                        "cardID": "B002_C2",
+                        "colorIndex": 1,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    },
+                    {
+                        "cardID": "B002_C3",
+                        "colorIndex": 1,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    }
+                ],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 2,
+            "y": 2,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 2,
+            "y": 3,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 2,
+            "y": 4,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 2,
+            "y": 5,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 2,
+            "y": 6,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 3,
+            "y": 0,
+            "type": 1,
+            "box": {
+                "boxID": "B003",
+                "gridPosition": {
+                    "x": 3,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [
+                    {
+                        "cardID": "B003_C1",
+                        "colorIndex": 1,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    },
+                    {
+                        "cardID": "B003_C2",
+                        "colorIndex": 1,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    },
+                    {
+                        "cardID": "B003_C3",
+                        "colorIndex": 1,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    }
+                ],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 3,
+            "y": 1,
+            "type": 1,
+            "box": {
+                "boxID": "B004",
+                "gridPosition": {
+                    "x": 3,
+                    "y": 1
+                },
+                "colorIndex": 1,
+                "hidden": false,
+                "initialCards": [
+                    {
+                        "cardID": "B004_C1",
+                        "colorIndex": 0,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    },
+                    {
+                        "cardID": "B004_C2",
+                        "colorIndex": 0,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    },
+                    {
+                        "cardID": "B004_C3",
+                        "colorIndex": 0,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    }
+                ],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 3,
+            "y": 2,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 3,
+            "y": 3,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 3,
+            "y": 4,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 3,
+            "y": 5,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 3,
+            "y": 6,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 4,
+            "y": 0,
+            "type": 1,
+            "box": {
+                "boxID": "B005",
+                "gridPosition": {
+                    "x": 4,
+                    "y": 0
+                },
+                "colorIndex": 1,
+                "hidden": false,
+                "initialCards": [
+                    {
+                        "cardID": "B005_C1",
+                        "colorIndex": 0,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    },
+                    {
+                        "cardID": "B005_C2",
+                        "colorIndex": 0,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    },
+                    {
+                        "cardID": "B005_C3",
+                        "colorIndex": 0,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    }
+                ],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 4,
+            "y": 1,
+            "type": 1,
+            "box": {
+                "boxID": "B006",
+                "gridPosition": {
+                    "x": 4,
+                    "y": 1
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [
+                    {
+                        "cardID": "B006_C1",
+                        "colorIndex": 1,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    },
+                    {
+                        "cardID": "B006_C2",
+                        "colorIndex": 1,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    },
+                    {
+                        "cardID": "B006_C3",
+                        "colorIndex": 1,
+                        "assignedTopSlot": -1,
+                        "resolvedBox": {
+                            "instanceID": 0
+                        },
+                        "assignedMiddleSlotIndex": -1
+                    }
+                ],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 4,
+            "y": 2,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 4,
+            "y": 3,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 4,
+            "y": 4,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 4,
+            "y": 5,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 4,
+            "y": 6,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 5,
+            "y": 0,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 5,
+            "y": 1,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 5,
+            "y": 2,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 5,
+            "y": 3,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 5,
+            "y": 4,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 5,
+            "y": 5,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 5,
+            "y": 6,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 6,
+            "y": 0,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 6,
+            "y": 1,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 6,
+            "y": 2,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 6,
+            "y": 3,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 6,
+            "y": 4,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 6,
+            "y": 5,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 6,
+            "y": 6,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 7,
+            "y": 0,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 7,
+            "y": 1,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 7,
+            "y": 2,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 7,
+            "y": 3,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 7,
+            "y": 4,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 7,
+            "y": 5,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        },
+        {
+            "x": 7,
+            "y": 6,
+            "type": 0,
+            "box": {
+                "boxID": "",
+                "gridPosition": {
+                    "x": 0,
+                    "y": 0
+                },
+                "colorIndex": 0,
+                "hidden": false,
+                "initialCards": [],
+                "resolved": false,
+                "assignedCards": []
+            },
+            "pipe": {
+                "spawnCount": 0,
+                "boxes": []
+            }
+        }
+    ],
+    "middleSlotBoxes": [],
+    "topSlotsCards": []
+}

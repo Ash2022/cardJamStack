@@ -27,7 +27,7 @@ public class CardView : MonoBehaviour
         GameManager.Instance.RegisterCardView(this);
 
         // Set face color based on the card’s colorIndex
-        cardRenderer.material.color = Helper.GetColor(cardData.colorIndex);
+        cardRenderer.material = LevelVisualizer.Instance.GetCardMaterialByColorIndex(cardData.colorIndex);
 
         // Show or hide the face/back overlay
         if (showCards)
@@ -59,6 +59,8 @@ public class CardView : MonoBehaviour
             return null;
         }
 
+        SoundsManager.Instance.PlayHaptics(SoundsManager.TapticsStrenght.Light);
+
         flyingToTop = true;
 
         int topIdx = _data.assignedTopSlot;
@@ -76,7 +78,7 @@ public class CardView : MonoBehaviour
 
         transform.DOLocalRotate(new Vector3(90, -90, 0), flyDuration+ addedTime);
 
-        Tween tween= transform.DOLocalMove(Vector3.zero, flyDuration+ addedTime)
+        Tween tween= transform.DOLocalMove(new Vector3(0,-0.035f,0), flyDuration+ addedTime)
             .SetEase(Ease.OutCubic)
             .OnComplete(() =>
             {

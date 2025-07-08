@@ -51,13 +51,13 @@ public class BoxView : MonoBehaviour
         // 2) Hidden vs. visible coloring
         if (data.hidden)
         {
-            boxRenderer.material.color = Helper.GetHiddenColor();
+            boxRenderer.material = LevelVisualizer.Instance.GetHiddenMaterial();
 
             questionMarkGO.SetActive(true);
         }
         else
         {
-            boxRenderer.material.color = Helper.GetColor(data.colorIndex);
+            boxRenderer.material= LevelVisualizer.Instance.GetBoxMaterialByColorIndex(data.colorIndex);
             
             questionMarkGO.SetActive(false);
         }
@@ -87,6 +87,10 @@ public class BoxView : MonoBehaviour
     /// <param name="middleSlotTransform">Transform of the middle‐slot this box should land in.</param>
     public void StartFlyToMiddle(Transform middleSlotTransform, int midIndex)
     {
+        SoundsManager.Instance.PlayHaptics(SoundsManager.TapticsStrenght.Medium);
+        SoundsManager.Instance.PlayBoxFlys();
+
+
         resolvedSlotIndex = midIndex;
 
         Collider.enabled = false;
@@ -117,7 +121,7 @@ public class BoxView : MonoBehaviour
         // 🔔 Midpoint reached
         seq.AppendCallback(() =>
         {
-            Debug.Log("Reached midpoint!");
+            //Debug.Log("Reached midpoint!");
             // Do whatever you want here
             GameManager.Instance.SendBoxCardsToTop(_data);
         });
@@ -129,13 +133,13 @@ public class BoxView : MonoBehaviour
         // 🔔 Final position reached
         seq.OnComplete(() =>
         {
-            Debug.Log("Reached final position!");
+            //Debug.Log("Reached final position!");
             // Final callback logic
 
             // After box arrives, trigger each card’s flight to its top slot
             boxArrivedToMiddleSlot = true;
-            
 
+            //GameManager.Instance.SendBoxCardsToTop(_data);
             GameManager.Instance.OnBoxArrived(this);
 
         });
@@ -165,6 +169,16 @@ public class BoxView : MonoBehaviour
 
     internal void BoxViewUnblocked()
     {
+        if(_data.hidden)
+        {
+            SoundsManager.Instance.HiddenBoxUnlocked();
+            boxRenderer.material = LevelVisualizer.Instance.GetBoxMaterialByColorIndex(_data.colorIndex);
+
+            questionMarkGO.SetActive(false);
+        }
+        else
+            SoundsManager.Instance.NormalBoxUnlocks();
+
         //if the box was hidden - show its color
         transform.DOScale(Vector3.one,0.15f).SetEase(Ease.OutElastic);
         //show the cards
@@ -189,6 +203,9 @@ public class BoxView : MonoBehaviour
 
     private void StartDisappear()
     {
+        SoundsManager.Instance.PlayHaptics(SoundsManager.TapticsStrenght.Medium);
+        SoundsManager.Instance.PlayBoxResolved();
+
         var seq = DOTween.Sequence();
 
         // 1. Scale down to 0

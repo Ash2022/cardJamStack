@@ -10,18 +10,27 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [Header("Start Settings")]
-    [SerializeField] private int currLevelIndex = 0;
+    [SerializeField] private int currLevelIndex = -1;
     [SerializeField] public LevelVisualizer visualizer;
     [SerializeField] GameOverView gameOverView;
     [SerializeField] InGameUIView inGameUIView;
+    [SerializeField] UnlocksManagerView unlocksManagerView;
+    [SerializeField]TutorialView tutorialView;
+
+    
+    float baseAspect = 9f / 16f;   // Your target design aspect
+    float baseSize = 6f;
 
     private Dictionary<string, CardView> _cardViewsByID = new Dictionary<string, CardView>();
     private Dictionary<string, BoxView> _boxViewsByID = new Dictionary<string, BoxView>();
 
     bool gameOver = false;
+    bool gameActive = false;
+    bool gameIsLostButStillPlaying = false;
 
     public LevelData CurrentLevelData { get; private set; }
     public int CurrLevelIndex { get => currLevelIndex; set => currLevelIndex = value; }
+    public bool GameIsLostButStillPlaying { get => gameIsLostButStillPlaying; set => gameIsLostButStillPlaying = value; }
 
     private void Awake()
     {
@@ -42,6 +51,18 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        float currentAspect = (float)Screen.width / Screen.height;
+        Camera.main.orthographicSize = baseSize * (baseAspect / currentAspect);
+
+        if (currLevelIndex == -1)
+        {
+            currLevelIndex = ModelManager.Instance.GetLastPlayedLevelIndex();
+
+            currLevelIndex++;
+
+        }
+
+
         LoadAndStartCurrLevel();
     }
 
@@ -57,11 +78,37 @@ public class GameManager : MonoBehaviour
 
         inGameUIView.InitUI(CurrentLevelData,currLevelIndex);
 
+        //check for unlocks
+        ModelManager.UnlockTypes? unlockType = ModelManager.Instance.GetUnlocksForLevel(currLevelIndex);
+
+        if(unlockType==null)
+            gameActive = true;
+        else
+        {
+            unlocksManagerView.ShowUnlockScreen((ModelManager.UnlockTypes)unlockType, () =>
+            {
+                gameActive = true;
+            });
+        }
         gameOver = false;
+        gameIsLostButStillPlaying = false;
+
+
+        //check if need to show tutorial
+        if(currLevelIndex == 0)
+        {
+            //B005 -- start box id
+            if(TryGetBoxView("B005", out BoxView boxView))
+                tutorialView.ShowTutorialOnBoxID(boxView.transform.position);            
+        }
+
     }
 
     void Update()
     {
+        if (!gameActive)
+            return;
+
         if (gameOver)
             return;
 
@@ -85,7 +132,14 @@ public class GameManager : MonoBehaviour
 
         // only play if unlocked
         if (GameLogic.IsBoxUnlocked(level, boxID))
+        {
+            SoundsManager.Instance.BoxClicked(true);
             PlayBox(boxView);
+        }
+        else
+        {
+            SoundsManager.Instance.BoxClicked(false);
+        }
         
     }
 
@@ -98,7 +152,13 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void PlayBox(BoxView boxView)
     {
-        var level = CurrentLevelData;
+        //check if need to hide tutorial
+        if (currLevelIndex == 0)
+        {
+            tutorialView.HideHand();
+        }
+
+            var level = CurrentLevelData;
         var boxData = boxView.Data;
 
         // 1) Place the box into the middle‐slot model
@@ -186,46 +246,60 @@ public class GameManager : MonoBehaviour
             
             if (topIndex < 0)
             {
-                GameOver(false);
-                Debug.Log("Game Over: no free top slot");
-                return;
-            }
+                //if we reached here it means that there are cards
+                //in the box WITHOUT a top slot to move them to
+                //need to play the box to fly to its location
+                //need to play the cards that do have spaces
+                //and once the last card reached its slot - than we need to show the game over.
 
-            level.topSlotsCards[topIndex] = card;
-            card.assignedTopSlot = topIndex;
-            card.resolvedBox = null;
+                //GameOver(false);
+                Debug.Log("Game Over: no free top slot");
+                //return;
+
+                gameIsLostButStillPlaying = true;
+            }
+            else
+            {
+                level.topSlotsCards[topIndex] = card;
+                card.assignedTopSlot = topIndex;
+                card.resolvedBox = null;
+            }
         }
 
         // 3) Resolve any top‐slot cards against the updated middle‐slot model
-        for (int i = 0; i < level.topSlotsCards.Count; i++)
+
+        if(GameIsLostButStillPlaying == false)
         {
-            var card = level.topSlotsCards[i];
-            if (card == null || card.resolvedBox != null)
-                continue;
-
-            // find the boxes that have the most cards assigned to them and first matching middle box with space 
-            var targetBox = level.middleSlotBoxes.Where(b => b != null && b.colorIndex == card.colorIndex && b.assignedCards.Count < 3)
-            .OrderByDescending(b => b.assignedCards.Count)  // prefer fuller boxes
-            .ThenBy(b => level.middleSlotBoxes.IndexOf(b))  // stable fallback by order
-            .FirstOrDefault();
-
-            if (targetBox != null)
+            for (int i = 0; i < level.topSlotsCards.Count; i++)
             {
-                // assign card to that box in the model
-                TryGetBoxView(targetBox.boxID, out BoxView bv);
+                var card = level.topSlotsCards[i];
+                if (card == null || card.resolvedBox != null)
+                    continue;
 
-                if(bv!=null)
-                    card.resolvedBox = bv;
+                // find the boxes that have the most cards assigned to them and first matching middle box with space 
+                var targetBox = level.middleSlotBoxes.Where(b => b != null && b.colorIndex == card.colorIndex && b.assignedCards.Count < 3)
+                .OrderByDescending(b => b.assignedCards.Count)  // prefer fuller boxes
+                .ThenBy(b => level.middleSlotBoxes.IndexOf(b))  // stable fallback by order
+                .FirstOrDefault();
+
+                if (targetBox != null)
+                {
+                    // assign card to that box in the model
+                    TryGetBoxView(targetBox.boxID, out BoxView bv);
+
+                    if(bv!=null)
+                        card.resolvedBox = bv;
                 
-                card.assignedMiddleSlotIndex = targetBox.assignedCards.Count;
-                targetBox.assignedCards.Add(card);
+                    card.assignedMiddleSlotIndex = targetBox.assignedCards.Count;
+                    targetBox.assignedCards.Add(card);
 
-                // remove it from the top‐slot model
-                level.topSlotsCards[i] = null;
+                    // remove it from the top‐slot model
+                    level.topSlotsCards[i] = null;
 
-                if (targetBox.assignedCards.Count == 3)
-                    targetBox.resolved = true;
+                    if (targetBox.assignedCards.Count == 3)
+                        targetBox.resolved = true;
 
+                }
             }
         }
 
@@ -274,11 +348,15 @@ public class GameManager : MonoBehaviour
 
         // Check if all middle slots are full and none are resolved
         bool allFullAndBlocked = level.middleSlotBoxes.All(b => b != null && !b.resolved);
-        if (allFullAndBlocked)
+
+        //added second condition so i only show the GameOver after the box played and player saw there is no room
+        if (allFullAndBlocked && GameIsLostButStillPlaying==false)
         {
-            GameOver(false);
+            //GameOver(false);
+            GameIsLostButStillPlaying = true;
             Debug.Log("Game Over: All middle boxes are blocked");
         }
+
     }
 
 
@@ -295,7 +373,7 @@ public class GameManager : MonoBehaviour
             if (_cardViewsByID.TryGetValue(card.cardID, out var cv))
                 cv.FlyToTopSlot(addedTime);
 
-            addedTime += 0.1f;
+            addedTime += 0.2f;
         }
     }
 
@@ -305,6 +383,24 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void OnBoxArrived(BoxView boxView)
     {
+
+        if(GameIsLostButStillPlaying)
+        {
+            GameOver(false);
+            return;
+        }
+
+        //check if need to show tutorial
+        if (currLevelIndex == 0)
+        {
+            string boxID = GetRandomUnlockedBox(CurrentLevelData);
+
+            if(boxID != "")
+                if (TryGetBoxView(boxID, out BoxView boxView2))
+                    tutorialView.ShowTutorialOnBoxID(boxView2.transform.position);
+        }
+
+
         // 1) Find the BoxData for this view
         var boxData = boxView.Data;
 
@@ -455,12 +551,19 @@ public class GameManager : MonoBehaviour
         if(gameOver) 
             return;
 
+        tutorialView.CloseTutorial();
+
+        SoundsManager.Instance.PlayHaptics(SoundsManager.TapticsStrenght.High);
+        SoundsManager.Instance.PlayLevelCompelte(win);
+
         gameOver = true;
 
         if (win)
         {
+            
             Debug.Log("Game Over: YOU WIN!");
-            // TODO: show win UI, stop input, etc.            
+            // TODO: show win UI, stop input, etc.
+            ModelManager.Instance.SetLastPlayedLevelIndex(currLevelIndex);
 
         }
         else
@@ -469,7 +572,7 @@ public class GameManager : MonoBehaviour
             // TODO: show fail UI, stop input, etc.
         }
 
-        gameOverView.ShowGameOver(win, GameOverNextClicked);
+        gameOverView.ShowGameOver(win,CurrLevelIndex, GameOverNextClicked);
     }
 
     private void GameOverNextClicked(bool win)
@@ -484,5 +587,19 @@ public class GameManager : MonoBehaviour
         }
 
         LoadAndStartCurrLevel();
+    }
+
+    public static string GetRandomUnlockedBox(LevelData levelData)
+    {
+        var unlockedBoxes = levelData.gridSlots
+            .Where(slot => slot.box != null && GameLogic.IsBoxUnlocked(levelData, slot.box.boxID))
+            .Select(slot => slot.box)
+            .ToList();
+
+        if (unlockedBoxes.Count == 0)
+            return "";
+
+        int index = UnityEngine.Random.Range(0, unlockedBoxes.Count);
+        return unlockedBoxes[index].boxID;
     }
 }
