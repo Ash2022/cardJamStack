@@ -3269,7 +3269,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 33b68fa17fe66e943ba67130d5e7e560, type: 2}
   - {fileID: 2100000, guid: 8c49854d8e18c0b4b9b6059d66bce4a5, type: 2}
   - {fileID: 2100000, guid: 1063a2e9a1f66644e862fb3c0f35d799, type: 2}
-  - {fileID: 2100000, guid: 1f378030aeb90b74488431b8cad73ad5, type: 2}
+  - {fileID: 2100000, guid: b75b231e7eecac849a81b8c7b25e0d9b, type: 2}
   - {fileID: 2100000, guid: 83d49592e68607c48a8f80bd1f9ec122, type: 2}
   boxMaterials:
   - {fileID: 2100000, guid: 61e1b5dd58b764c4190e0010155885c9, type: 2}
@@ -3281,7 +3281,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 60c95b5f8d682d54e8474bbed6d50d9d, type: 2}
   - {fileID: 2100000, guid: bdc647531700a274b95a97a1cbc184ce, type: 2}
   - {fileID: 2100000, guid: 66ec47f084562a0449d7759d935155b7, type: 2}
-  - {fileID: 2100000, guid: 0b7671358ef313949892955b470ec508, type: 2}
+  - {fileID: 2100000, guid: 0484ae025297e2947833a556b012dbfc, type: 2}
   - {fileID: 2100000, guid: 5f450c0629e4748418887d5547bd2fb6, type: 2}
 --- !u!4 &1694372641
 Transform:
@@ -3353,7 +3353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43539611c795e9948b5be745c5e726dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currLevelIndex: 30
+  currLevelIndex: -1
   visualizer: {fileID: 1694372640}
   gameOverView: {fileID: 1488288058}
   inGameUIView: {fileID: 1146125452}
