@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CardView : MonoBehaviour
 {
-    [SerializeField] private float flyDuration = 0.75f;
+    [SerializeField] private float flyDuration = 0.35f;
 
     [Header("Visual References")]
     [SerializeField] private Renderer cardRenderer;
@@ -42,7 +42,7 @@ public class CardView : MonoBehaviour
     {
         gameObject.SetActive(true);
 
-        transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutElastic).SetDelay(delay);
+        transform.DOScale(Vector3.one, 0.35f).SetEase(Ease.OutElastic).SetDelay(delay);
     }
 
     /// <summary>
@@ -145,6 +145,7 @@ public class CardView : MonoBehaviour
         {
             // let the box know this card has arrived
             Data.resolvedBox.NotifyCardArrived(this);
+            SoundsManager.Instance.PlayCardReachBox();
         });
     }
 

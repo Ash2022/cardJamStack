@@ -45,13 +45,12 @@ public static class GameLogic
             if (slot == null)
                 return true;                  // non-existing cell
 
-            // ——— **(A) Pipe-exit block:** if this cell sits immediately above a pipe 
-            // whose spawn list is now empty, it’s blocked
+            // Block if standing on top of a pipe that still has boxes
             var below = GetSlot(pos.x, pos.y + 1);
             if (below != null
              && below.type == SlotType.Pipe
              && below.pipe != null
-             && below.pipe.boxes.Count == 0)
+             && below.pipe.boxes.Count > 0)
             {
                 return true;
             }

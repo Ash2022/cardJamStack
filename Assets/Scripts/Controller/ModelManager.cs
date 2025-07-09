@@ -34,7 +34,7 @@ public class ModelManager : MonoBehaviour
 
         //build unlocks list
         unlocksIndexList.Add(6, UnlockTypes.Pipe);
-        unlocksIndexList.Add(10, UnlockTypes.Hidden);
+        unlocksIndexList.Add(13, UnlockTypes.Hidden);
 
         // Parse all TextAssets into LevelData templates
         _templates.Clear();
@@ -51,11 +51,7 @@ public class ModelManager : MonoBehaviour
     /// </summary>
     public LevelData GetLevelByIndex(int index)
     {
-        if (index < 0 || index >= _templates.Count)
-        {
-            Debug.LogError($"ModelManager: invalid level index {index}");
-            return null;
-        }
+        
 
         int numLevels = GetNumLevels();
 

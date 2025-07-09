@@ -83,7 +83,7 @@ public class LevelEditorWindow : EditorWindow
         GUILayout.EndHorizontal();
 
         // 1) Draw your existing slider:
-        int newNum = EditorGUILayout.IntSlider("Number of colors", currentLevel.numColors, 2, 8);
+        int newNum = EditorGUILayout.IntSlider("Number of colors", currentLevel.numColors, 2, 10);
         if (newNum != currentLevel.numColors)
         {
             currentLevel.numColors = newNum;
@@ -105,14 +105,23 @@ public class LevelEditorWindow : EditorWindow
 
         // 2) Draw the palette:
         EditorGUILayout.LabelField("Color Index Mapping:", EditorStyles.boldLabel);
+
+        GUILayout.BeginHorizontal();
         for (int i = 0; i < currentLevel.numColors; i++)
         {
+            GUILayout.BeginVertical(GUILayout.Width(100)); // Adjust width as needed
+
+            EditorGUILayout.LabelField($"Color {i}", GUILayout.Width(80));
+
             int selectedIndex = Array.IndexOf(NamedColors, editorColorNames[i]);
             if (selectedIndex < 0) selectedIndex = 0;
 
-            int newIndex = EditorGUILayout.Popup($"Color {i}", selectedIndex, NamedColors);
+            int newIndex = EditorGUILayout.Popup(selectedIndex, NamedColors, GUILayout.Width(80));
             editorColorNames[i] = NamedColors[newIndex];
+
+            GUILayout.EndVertical();
         }
+        GUILayout.EndHorizontal();
 
         // ── Middle slot count only ──
         int targetCount = EditorGUILayout.IntSlider("Middle Slot Count", currentLevel.middleSlots.Count, 5, 7);
@@ -152,7 +161,7 @@ public class LevelEditorWindow : EditorWindow
         float margin = 5f;
         int rows = currentLevel.numberOfRows;
         int cols = currentLevel.numberOfTopSlotsPerRow;
-        float slot = cellSize;
+        float slot = cellSize/2f;
         float totalW = cols * slot + (cols - 1) * margin;
         float totalH = rows * slot + (rows - 1) * margin;
         GUILayout.Label("Top Area");
@@ -172,7 +181,7 @@ public class LevelEditorWindow : EditorWindow
     {
         float margin = 5f;
         int count = currentLevel.middleSlots.Count;
-        float slot = cellSize;
+        float slot = cellSize/2;
         float totalW = count * slot + (count - 1) * margin;
         GUILayout.Label("Middle Area");
         Rect r = GUILayoutUtility.GetRect(totalW, slot);
@@ -237,6 +246,7 @@ public class LevelEditorWindow : EditorWindow
             {
                 slot.pipe.spawnCount = EditorGUI.IntField(cell, slot.pipe.spawnCount);
             }
+            
             else // Box
             {
                 float bs = cellSize * boxScale;
@@ -255,6 +265,9 @@ public class LevelEditorWindow : EditorWindow
                 while (slot.box.initialCards.Count < 3)
                     slot.box.initialCards.Add(new CardData { colorIndex = 0, cardID = "" });
 
+                if(slot.box.hidden)
+                    EditorGUI.LabelField(brect, "H");
+
                 // Now you can safely do:
                 float cw = bs / 3f;
                 for (int i = 0; i < 3; i++)
@@ -266,6 +279,7 @@ public class LevelEditorWindow : EditorWindow
                     var card = slot.box.initialCards[i];
                     Color ccol = GetEditorColor(card.colorIndex);
                     EditorGUI.DrawRect(crec, ccol);
+                    
                 }
             }
 
@@ -496,101 +510,10 @@ public class LevelEditorWindow : EditorWindow
     }
 
 
-    /*
     private void DrawPipesUI()
     {
-        GUILayout.Space(10);
-        GUILayout.Label("Pipe Previews (click box to cycle color; click a card to cycle its color):", EditorStyles.boldLabel);
-
-        // Capture the current Event so we can detect clicks
-        var evt = Event.current;
-
-        foreach (var slot in currentLevel.gridSlots.Where(s => s.type == SlotType.Pipe))
-        {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label($"Pipe @ ({slot.x},{slot.y}):", GUILayout.Width(80));
-
-            if (slot.pipe?.boxes != null)
-            {
-                for (int b = 0; b < slot.pipe.boxes.Count; b++)
-                {
-                    var box = slot.pipe.boxes[b];
-                    // 1) Reserve a fixed 50×50 rect
-                    Rect cellRect = GUILayoutUtility.GetRect(50, 50, GUILayout.ExpandWidth(false));
-
-                    // 2) Draw box background at 90% size
-                    float bs = cellRect.width * 0.9f;
-                    var brect = new Rect(
-                        cellRect.x + (cellRect.width - bs) * 0.5f,
-                        cellRect.y + (cellRect.height - bs) * 0.5f,
-                        bs, bs);
-                    var boxCol = GetEditorColor(box.colorIndex);
-                    EditorGUI.DrawRect(brect, boxCol);
-
-                    // 3) Draw its 3 inner cards
-                    float cw = bs / 3f;
-                    for (int i = 0; i < 3; i++)
-                    {
-                        var cr = new Rect(
-                            brect.x + i * cw,
-                            brect.y + 0.66f * cw, // shift down slightly so cards appear below box top
-                            cw * 0.9f,
-                            cw * 0.9f);
-                        if (box.initialCards != null && box.initialCards.Count > i)
-                        {
-                            var cidx = box.initialCards[i].colorIndex;
-                            EditorGUI.DrawRect(cr, GetEditorColor(cidx));
-                        }
-                    }
-
-                    // 4) Handle clicks: card first, then box
-                    if (evt.type == EventType.MouseDown && cellRect.Contains(evt.mousePosition))
-                    {
-                        bool used = false;
-                        for (int i = 0; i < 3; i++)
-                        {
-                            var cr = new Rect(
-                                brect.x + i * cw,
-                                brect.y + 0.66f * cw,
-                                cw * 0.9f,
-                                cw * 0.9f);
-                            if (cr.Contains(evt.mousePosition) && box.initialCards != null && box.initialCards.Count > i)
-                            {
-                                // cycle this card's color
-                                box.initialCards[i].colorIndex = (box.initialCards[i].colorIndex + 1) % currentLevel.numColors;
-                                used = true;
-                                evt.Use();
-                                break;
-                            }
-                        }
-                        if (!used)
-                        {
-                            // cycle the box's color
-                            box.colorIndex = (box.colorIndex + 1) % currentLevel.numColors;
-                            evt.Use();
-                        }
-                    }
-
-                    GUILayout.Space(5);
-                }
-            }
-
-            EditorGUILayout.EndHorizontal();
-        }
-
-        // ensure clicks repaint the window immediately
-        if (evt.type == EventType.MouseDown)
-            Repaint();
-    }
-
-    */
-
-    private void DrawPipesUI()
-    {
-        GUILayout.Space(10);
-        GUILayout.Label(
-          "Pipe Previews (click box to cycle color; click a card to cycle its color):",
-          EditorStyles.boldLabel);
+        
+       
 
         var evt = Event.current;
 

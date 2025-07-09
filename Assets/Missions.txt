@@ -554,9 +554,25 @@ for all those things give me only the changes
 
  Stuff i need from Nina
 
- 1. hidden question mark
- 2. a gray box for hidden
+ 1. hidden question mark 128*less
+ 2. a gray box for hidden unlock - make gray - same size as the pipe +-
  3. the outline for the grid
 
- Bezi
- MCPServer
+
+
+ Clear the box holder data faster - so its slot can be used fater, so less wait 
+ make box appear effect --- DONE
+ try to make in box disappear effect making it smaller
+
+
+ unlocking doesnt update when there is a pipe exit that completed its boxes --_ DONE
+ move question mark lower on hidden --- DONE
+ change hidden to unlock at index 13 -- DONE
+ fix pipe shooting out a new box - maybe will happen when we have box appear animation --- DONE
+
+
+
+
+ Level 30
+
+ i have one in light blue instead of torquise

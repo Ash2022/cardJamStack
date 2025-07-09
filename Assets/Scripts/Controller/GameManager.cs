@@ -51,8 +51,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = 60;
+
         float currentAspect = (float)Screen.width / Screen.height;
         Camera.main.orthographicSize = baseSize * (baseAspect / currentAspect);
+
+        //PlayerPrefs.DeleteAll();
 
         if (currLevelIndex == -1)
         {
@@ -344,7 +348,10 @@ public class GameManager : MonoBehaviour
             cellView.Initialize(exitSlot, visualizer.BoxPrefab, visualizer.PipePrefab, visualizer.CardPrefab);
         }
 
-        UpdateUnlocks();
+        bool anythingUnlocked = UpdateUnlocks();
+
+        if(anythingUnlocked)
+            SoundsManager.Instance.NormalBoxUnlocks();
 
         // Check if all middle slots are full and none are resolved
         bool allFullAndBlocked = level.middleSlotBoxes.All(b => b != null && !b.resolved);
@@ -420,8 +427,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void UpdateUnlocks()
+    public bool UpdateUnlocks()
     {
+        bool anythingUnlocked = false;
         var level = CurrentLevelData;
 
         // 1) For each grid slot that still holds a box…
@@ -438,10 +446,16 @@ public class GameManager : MonoBehaviour
             // 3) Find its view and update its locked state
             if (_boxViewsByID.TryGetValue(boxID, out var bv))
             {
-                if(unlocked)
+                if(unlocked && bv.IsLocked)
+                {
                     bv.BoxViewUnblocked();
+                    anythingUnlocked = true;
+                }
+
             }
         }
+
+        return anythingUnlocked;
     }
 
     /// <summary>

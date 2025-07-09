@@ -52,7 +52,7 @@ public class GridCellView : MonoBehaviour
                 break;
 
             case SlotType.Box:
-                if (slot.box != null)
+                if (slot.box != null && abovePipe==false)
                 {
                     var boxGO = Instantiate(boxPrefab, contentParent);
                     var bv = boxGO.GetComponent<BoxView>();

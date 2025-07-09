@@ -16,6 +16,8 @@ public class SoundsManager : MonoBehaviour
     [SerializeField] AudioClip boxClicked;
     [SerializeField]AudioClip lockedBoxClicked;
 
+    [SerializeField] AudioClip cardReachedBox;
+
     [SerializeField] AudioClip boxFlysToMiddle;
     [SerializeField] AudioClip boxResolved;
     [SerializeField] AudioClip hiddenBoxUnlocked;
@@ -47,7 +49,16 @@ public class SoundsManager : MonoBehaviour
     
     public void BoxClicked(bool validClick)
     {
-        PlayClip(validClick?boxClicked:lockedBoxClicked);
+        //PlayClip(validClick?boxClicked:lockedBoxClicked);
+
+        if(!validClick)
+            PlayClip(lockedBoxClicked);
+
+    }
+
+    public void PlayCardReachBox()
+    {
+        PlayClip(cardReachedBox);
     }
 
     public void PlayBoxFlys()

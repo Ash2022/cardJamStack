@@ -174,11 +174,23 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4662277974442122524, guid: 4e9549165d5ac5d439d4654b466fc730, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c963b00159e0c4e4fb442280529b66a5, type: 3}
     - target: {fileID: 5793875619440166522, guid: 4e9549165d5ac5d439d4654b466fc730, type: 3}
       propertyPath: m_text
       value: 'YOU HAVE UNLOCKED
 
-        THE <color=green>HIDDEN</color> COLOR BOX'
+        THE <color=green>HIDDEN</color> BOX'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7393740507244143906, guid: 4e9549165d5ac5d439d4654b466fc730, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 102
+      objectReference: {fileID: 0}
+    - target: {fileID: 7393740507244143906, guid: 4e9549165d5ac5d439d4654b466fc730, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 106
       objectReference: {fileID: 0}
     - target: {fileID: 8652515276363548142, guid: 4e9549165d5ac5d439d4654b466fc730, type: 3}
       propertyPath: m_Pivot.x
@@ -262,7 +274,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 8652515276363548142, guid: 4e9549165d5ac5d439d4654b466fc730, type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 1463206606}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4e9549165d5ac5d439d4654b466fc730, type: 3}
 --- !u!224 &218770268 stripped
@@ -817,7 +832,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 9, y: 16}
+  m_Size: {x: 9, y: 20}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -2557,10 +2572,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boxClicked: {fileID: 8300000, guid: 73019bc24a0f43d4f9b8d68e16dc4a0c, type: 3}
   lockedBoxClicked: {fileID: 8300000, guid: 5764ff8d6b4c857468eef6c8fa33fd57, type: 3}
+  cardReachedBox: {fileID: 8300000, guid: b9305b26532560e45b7042b2b948021b, type: 3}
   boxFlysToMiddle: {fileID: 8300000, guid: c8192dfebfd19ba48b74f29befd79076, type: 3}
   boxResolved: {fileID: 8300000, guid: ba4f242474c780b4a9b5d2f076d900f0, type: 3}
   hiddenBoxUnlocked: {fileID: 8300000, guid: 221480a0aa615544998a1134f023508f, type: 3}
-  normalBoxUnlocks: {fileID: 8300000, guid: 92ee83e91027b8043858dc1a2a3378d7, type: 3}
+  normalBoxUnlocks: {fileID: 8300000, guid: 73019bc24a0f43d4f9b8d68e16dc4a0c, type: 3}
   levelComplete: {fileID: 8300000, guid: 9e517213be28c904da353b6bb347b1ef, type: 3}
   levelFail: {fileID: 8300000, guid: 667ff309bdff2d048adec4d42b088cd3, type: 3}
   _SFX_Source1: {fileID: 1148555007}
@@ -2781,7 +2797,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Tap the <color=blue>Boxes</color> to sort\r\n <color=blue>Cards</color>
+  m_text: "Tap the <color=#39B5FF>Boxes</color> to sort\r\n <color=#39B5FF>Cards</color>
     by matching colors!"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2daa4ea505efbc147a1e2f709635767c, type: 2}
@@ -2858,6 +2874,81 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1371410942}
+  m_CullTransparentMesh: 1
+--- !u!1 &1463206605
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1463206606}
+  - component: {fileID: 1463206608}
+  - component: {fileID: 1463206607}
+  m_Layer: 5
+  m_Name: unlockImage (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1463206606
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463206605}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 218770268}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -50}
+  m_SizeDelta: {x: 84, y: 128}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1463206607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463206605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: b7995cf0823127d4388e2d5afcb8aff6, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1463206608
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463206605}
   m_CullTransparentMesh: 1
 --- !u!1 &1488288056
 GameObject:
@@ -3063,7 +3154,7 @@ Transform:
   m_GameObject: {fileID: 1682795730}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -4, z: 0}
+  m_LocalPosition: {x: 0, y: -4.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3229,8 +3320,27 @@ MonoBehaviour:
   - {fileID: 4900000, guid: d0f5bd8275550224cbaa22ea113f1bb2, type: 3}
   - {fileID: 4900000, guid: 83796cbd46a0ec64d9bfe20c5d17617a, type: 3}
   - {fileID: 4900000, guid: 4a1dfb78ce8b34945988f2c56616f10a, type: 3}
-  - {fileID: 4900000, guid: 88934ae840926724f898167e1c9b728d, type: 3}
-  - {fileID: 4900000, guid: 6516cd55ecca5124b8855d135e0518d5, type: 3}
+  - {fileID: 4900000, guid: f8e772884de2a2f49aba0d5013d88cd7, type: 3}
+  - {fileID: 4900000, guid: 95c44c9097cd8aa46ab67171f10c091b, type: 3}
+  - {fileID: 4900000, guid: ace9d0509a92b4b4297b5ecf1a0e1b45, type: 3}
+  - {fileID: 4900000, guid: 7227ce951ed2a6646a635232878ec638, type: 3}
+  - {fileID: 4900000, guid: 1d4c7111e7cbe9045a44edd31b156566, type: 3}
+  - {fileID: 4900000, guid: 565e9feea5a86854480d4de469b58d2e, type: 3}
+  - {fileID: 4900000, guid: b17c2f385db344349b1761a3ba36ff10, type: 3}
+  - {fileID: 4900000, guid: 3a076aee73706654891342126bf6b13e, type: 3}
+  - {fileID: 4900000, guid: 430c15f00b15b264488c3a00d732b6f5, type: 3}
+  - {fileID: 4900000, guid: 311959804efcaa347842fec608004d91, type: 3}
+  - {fileID: 4900000, guid: cf13eb2f3a0fcb745a63e39f97dffabe, type: 3}
+  - {fileID: 4900000, guid: af940d202698d534d95e5215634e5a3a, type: 3}
+  - {fileID: 4900000, guid: ef42425a5cb45c4458a75a529f455f31, type: 3}
+  - {fileID: 4900000, guid: 67c3c5864a8d1b74b8ec7ed3f2610e5a, type: 3}
+  - {fileID: 4900000, guid: 3aba93e2f29e5964ca7b30ae8827c71e, type: 3}
+  - {fileID: 4900000, guid: 0a211c7b661e3f5429d807979bd94dc9, type: 3}
+  - {fileID: 4900000, guid: 6f3457343ca3cce43a9e6ea3c8e50fb5, type: 3}
+  - {fileID: 4900000, guid: 6e5a3c73b8382464d9e0e7ec677646d6, type: 3}
+  - {fileID: 4900000, guid: 66ed481e38b3f7449bae5dca8197620d, type: 3}
+  - {fileID: 4900000, guid: c82913f18f20eca4682de93b894dc076, type: 3}
+  - {fileID: 4900000, guid: 79a9264d5324f7844a3f27a2e4cc7504, type: 3}
 --- !u!114 &1694372643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3243,7 +3353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43539611c795e9948b5be745c5e726dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currLevelIndex: 7
+  currLevelIndex: 30
   visualizer: {fileID: 1694372640}
   gameOverView: {fileID: 1488288058}
   inGameUIView: {fileID: 1146125452}

@@ -6,7 +6,9 @@ using UnityEngine;
 
 public class BoxView : MonoBehaviour
 {
-    const float FLY_TO_MIDDLE_TIME = 1.25f;
+    const float FLY_TO_MIDDLE_TIME = 0.65f;
+    const float DISAPPEAR_TIME = 0.5f;
+
     const float CARD_SHOW_DELAY = 0.1f;
 
     [Header("Visual References")]
@@ -23,9 +25,12 @@ public class BoxView : MonoBehaviour
 
     int resolvedSlotIndex = -1;
     bool boxArrivedToMiddleSlot;
+    bool isLocked = false;
+    
 
     public BoxData Data { get => _data; set => _data = value; }
     public bool BoxArrivedToMiddleSlot { get => boxArrivedToMiddleSlot; set => boxArrivedToMiddleSlot = value; }
+    public bool IsLocked { get => isLocked; set => isLocked = value; }
 
     List<CardView> initialCardViews = new List<CardView>();
 
@@ -47,6 +52,8 @@ public class BoxView : MonoBehaviour
 
         // 1) Determine unlock state
         bool unlocked = GameLogic.IsBoxUnlocked(level, data.boxID);
+
+        isLocked = !unlocked;
 
         // 2) Hidden vs. visible coloring
         if (data.hidden)
@@ -78,6 +85,15 @@ public class BoxView : MonoBehaviour
         //locked boxes are 50% on Z
         if(unlocked == false)
             transform.localScale = new Vector3(1, 1, 0.5f);
+        else
+        {
+            //Debug.Log("Box View init scale up");
+
+            //normal unlocked box - make it have an appear animation
+            transform.localScale = new Vector3(0, 0, 0);
+            transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutQuad);
+
+        }
         
     }
 
@@ -176,8 +192,9 @@ public class BoxView : MonoBehaviour
 
             questionMarkGO.SetActive(false);
         }
-        else
-            SoundsManager.Instance.NormalBoxUnlocks();
+
+
+        //Debug.Log("Box View UnBlocked");
 
         //if the box was hidden - show its color
         transform.DOScale(Vector3.one,0.15f).SetEase(Ease.OutElastic);
@@ -209,19 +226,15 @@ public class BoxView : MonoBehaviour
         var seq = DOTween.Sequence();
 
         // 1. Scale down to 0
-        seq.Join(transform.DOScale(Vector3.zero, 1f).SetEase(Ease.InBack));
+        seq.Join(transform.DOScale(new Vector3(1,0,0), DISAPPEAR_TIME).SetEase(Ease.InBack));
 
         // 2. Rotate 360° around Z
-        seq.Join(transform.DOLocalRotate(
-            new Vector3(0f, 0f, 360f),
-            1f,
-            RotateMode.FastBeyond360
-        ).SetEase(Ease.InOutSine));
+        seq.Join(transform.DOLocalRotate(new Vector3(0f, 0f, 360f),DISAPPEAR_TIME,RotateMode.FastBeyond360).SetEase(Ease.InOutSine));
 
         // 3. Small hop up on Z (relative by 1 unit)
         Vector3 startPos = transform.localPosition;
-        Vector3 endPos = startPos + new Vector3(0f, 0f, 1f);
-        seq.Join(transform.DOLocalMove(endPos, -1.5f).SetEase(Ease.InOutSine));
+        Vector3 endPos = startPos + new Vector3(0f, 0f, 1.75f);
+        seq.Join(transform.DOLocalMove(endPos, -DISAPPEAR_TIME*1.5f).SetEase(Ease.InOutSine));
 
         seq.OnComplete(() =>
         {
