@@ -17,6 +17,8 @@ public class CardView : MonoBehaviour
     bool reachedTop = false;
     bool cardStartedResolved = false;
 
+    Vector3 cardRotationInBox = new Vector3(0, -4, 3);
+
     public CardData Data { get => _data; set => _data = value; }
 
     internal void Initialize(CardData cardData, bool showCards)
@@ -28,6 +30,8 @@ public class CardView : MonoBehaviour
 
         // Set face color based on the card’s colorIndex
         cardRenderer.material = LevelVisualizer.Instance.GetCardMaterialByColorIndex(cardData.colorIndex);
+
+        transform.localEulerAngles = cardRotationInBox;
 
         // Show or hide the face/back overlay
         if (showCards)
@@ -76,7 +80,7 @@ public class CardView : MonoBehaviour
 
         transform.SetParent(targetSlot);
 
-        transform.DOLocalRotate(new Vector3(90, -90, 0), flyDuration+ addedTime);
+        transform.DOLocalRotate(new Vector3(90, 90, 0), flyDuration+ addedTime);
 
         Tween tween= transform.DOLocalMove(new Vector3(0,-0.035f,0), flyDuration+ addedTime)
             .SetEase(Ease.OutCubic)
@@ -140,7 +144,7 @@ public class CardView : MonoBehaviour
 
         // reparent & animate
         transform.SetParent(slotTf);
-        transform.DOLocalRotate(Vector3.zero, flyDuration);
+        transform.DOLocalRotate(cardRotationInBox, flyDuration);
         transform.DOLocalMove(Vector3.zero, flyDuration).SetEase(Ease.OutQuad).OnComplete(() =>
         {
             // let the box know this card has arrived

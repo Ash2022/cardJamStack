@@ -116,6 +116,18 @@ public class GameManager : MonoBehaviour
         if (gameOver)
             return;
 
+        if (Input.GetKeyUp(KeyCode.A))
+        {
+            CheatLevelUp(true);
+            return;
+        }
+
+        if (Input.GetKeyUp(KeyCode.S))
+        {
+            CheatLevelUp(false);
+            return;
+        }
+
         if (!Input.GetMouseButtonDown(0))
             return;
 
@@ -345,7 +357,7 @@ public class GameManager : MonoBehaviour
 
             // re‐draw that one grid cell
             var cellView = visualizer.GetGridCellView(exitPos.x, exitPos.y);
-            cellView.Initialize(exitSlot, visualizer.BoxPrefab, visualizer.PipePrefab, visualizer.CardPrefab);
+            cellView.Initialize(exitSlot, visualizer.BoxPrefab, visualizer.PipePrefab, visualizer.CardPrefab,LevelVisualizer.SCALE_MULTI);
         }
 
         bool anythingUnlocked = UpdateUnlocks();
@@ -615,5 +627,11 @@ public class GameManager : MonoBehaviour
 
         int index = UnityEngine.Random.Range(0, unlockedBoxes.Count);
         return unlockedBoxes[index].boxID;
+    }
+
+    private void CheatLevelUp(bool up)
+    {
+        currLevelIndex += up ? 1 : -1;
+        LoadAndStartCurrLevel();
     }
 }

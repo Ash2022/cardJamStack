@@ -576,3 +576,11 @@ for all those things give me only the changes
  Level 30
 
  i have one in light blue instead of torquise
+
+
+
+
+ For Nina:
+
+ 1. Fix the white box - make the top part of it more white
+ 2. fix the yellow - the inside of it is same color like the outside.

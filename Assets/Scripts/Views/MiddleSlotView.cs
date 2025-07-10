@@ -11,7 +11,7 @@ public class MiddleSlotView : MonoBehaviour
     [SerializeField]SpriteRenderer spriteRenderer;
     [SerializeField] Sprite lockedSprite;
 
-    internal void Initialize(MiddleSlot middleSlot)
+    internal void Initialize(MiddleSlot middleSlot,float scaleMulti)
     {
         if (middleSlot.unlocksAtLevel-1 > GameManager.Instance.CurrLevelIndex)
         {

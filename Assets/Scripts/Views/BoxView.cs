@@ -34,6 +34,8 @@ public class BoxView : MonoBehaviour
 
     List<CardView> initialCardViews = new List<CardView>();
 
+
+
     /// <summary>
     /// Set up this box’s appearance and cards.
     /// </summary>
@@ -46,6 +48,8 @@ public class BoxView : MonoBehaviour
         // the number of cards we expect to arrive is the model’s assignedCards count
         _cardsExpected = 3;
         _cardsArrived = 0;
+
+        
 
         var level = GameManager.Instance.CurrentLevelData;
         GameManager.Instance.RegisterBoxView(this);

@@ -7,12 +7,13 @@ using UnityEngine;
 public class LevelVisualizer : MonoBehaviour
 {
     public const float EMPTY_ELEVATION = -0.1f;
-    const float MIDDLE_SLOT_SPACING = 0.15f;
+    const float MIDDLE_SLOT_SPACING = 0.075f;
     //const float TOP_SLOT_SPACING = 0.05f;
 
     public static LevelVisualizer Instance;
 
     const float CELL_SIZE = 0.7f;
+    public const float SCALE_MULTI = 1.15f;
 
     const float TOP_TOTAL_WIDTH = 5.5f;
     const float TOP_CELL_WIDTH = 0.464f;
@@ -71,6 +72,10 @@ public class LevelVisualizer : MonoBehaviour
         // initialize the lookup
         _cellViews = new Dictionary<Vector2Int, GridCellView>();
 
+        //apply the scale multi to cell size
+
+        float adjustedCellSize = CELL_SIZE * SCALE_MULTI;
+
         // 0) Ensure runtime lists are initialized to the right length
 
         //in middle slots - some slots might appear visually but are still locked - so they cannot go to the model
@@ -117,7 +122,7 @@ public class LevelVisualizer : MonoBehaviour
 
         //center grid based on the top row data
 
-        var boxSlots = level.gridSlots.Where(s => s.y == 0 && s.box.boxID != "").ToList();
+        var boxSlots = level.gridSlots.Where(s => s.box.boxID != "").ToList();
         int delta = 0;
         float centerX = 0;
         int minX = 0;
@@ -164,11 +169,11 @@ public class LevelVisualizer : MonoBehaviour
 
         // Middle area
         // compute per-slot size from middle frame sprite (or fallback)
-        Vector2 middleSlotSize = new Vector2(CELL_SIZE, CELL_SIZE);
+        Vector2 middleSlotSize = new Vector2(adjustedCellSize, adjustedCellSize);
         Vector3 middleOriginOffset = Vector3.zero;
 
-        middleSlotSize = new Vector2(CELL_SIZE, CELL_SIZE);
-        float totalWidth = (CELL_SIZE + MIDDLE_SLOT_SPACING) * (level.middleSlots.Count - 1);
+        middleSlotSize = new Vector2(adjustedCellSize, adjustedCellSize);
+        float totalWidth = (adjustedCellSize + MIDDLE_SLOT_SPACING) * (level.middleSlots.Count - 1);
         middleOriginOffset = new Vector3(-totalWidth * 0.5f, 0f, 0f);
 
         for (int i = 0; i < level.middleSlots.Count; i++)
@@ -182,19 +187,19 @@ public class LevelVisualizer : MonoBehaviour
 
 
             slotGO.transform.localPosition = middleOriginOffset
-                + new Vector3(i * (CELL_SIZE + MIDDLE_SLOT_SPACING), 0.3f, 0f);
+                + new Vector3(i * (adjustedCellSize + MIDDLE_SLOT_SPACING), 0.3f, 0f);
 
             // initialize view if needed, e.g.:
-            slotGO.GetComponent<MiddleSlotView>().Initialize(level.middleSlots[i]);
+            slotGO.GetComponent<MiddleSlotView>().Initialize(level.middleSlots[i],SCALE_MULTI);
 
         }
 
         // 5) Grid area
         // compute per-cell size from grid frame sprite (or fallback)
-        Vector2 gridCellSize = new Vector2(CELL_SIZE, CELL_SIZE);
+        Vector2 gridCellSize = new Vector2(adjustedCellSize, adjustedCellSize);
         Vector3 originOffset = Vector3.zero;
         
-        gridCellSize = new Vector2(CELL_SIZE, CELL_SIZE);
+        gridCellSize = new Vector2(adjustedCellSize, adjustedCellSize);
         originOffset = new Vector3(-(gridWidth - 1) * gridCellSize.x * 0.5f,(gridHeight - 1) * gridCellSize.y * 0.5f,0f);
 
 
@@ -210,7 +215,7 @@ public class LevelVisualizer : MonoBehaviour
             slotGO.name = "Cell: " + slot.x+"_"+slot.y;
             // (rest of your slot initialization here)
             var cellView = slotGO.GetComponent<GridCellView>();
-            cellView.Initialize(slot, BoxPrefab, PipePrefab,CardPrefab);
+            cellView.Initialize(slot, BoxPrefab, PipePrefab,CardPrefab,SCALE_MULTI);
             _cellViews[new Vector2Int(slot.x, slot.y)] = cellView;
 
             var outline = ComputeOutline(new Vector2Int(slot.x, slot.y), slotLookup, gridWidth, gridHeight);
@@ -219,13 +224,13 @@ public class LevelVisualizer : MonoBehaviour
             
         }
 
-        centerX = originOffset.x + centerX * CELL_SIZE;
+        centerX = originOffset.x + centerX * adjustedCellSize;
 
         GridHolder.transform.localPosition = new Vector3(-centerX, GridHolder.transform.localPosition.y, GridHolder.transform.localPosition.z);
 
 
         // ─── Add dummy visual border cells ──────────────────────────────────────────
-        gridCellSize = new Vector2(0.7f, 0.7f); // ensure fixed size
+        gridCellSize = new Vector2(adjustedCellSize, adjustedCellSize); // ensure fixed size
         int realGridWidth = 8;
         int realGridHeight = 7;
 
@@ -252,7 +257,7 @@ public class LevelVisualizer : MonoBehaviour
 
                 GameObject dummyGO = Instantiate(GridSlotPrefab, gridRoot.transform);
                 dummyGO.transform.localPosition = originOffset +
-                    new Vector3((x + 2) * gridCellSize.x, -(y) * gridCellSize.y-1.05f, EMPTY_ELEVATION);
+                    new Vector3((x + 2) * gridCellSize.x, -(y) * gridCellSize.y-1.05f*SCALE_MULTI, EMPTY_ELEVATION);
 
                 dummyGO.name = "Dummy_" + pos;
 
@@ -271,6 +276,7 @@ public class LevelVisualizer : MonoBehaviour
                     };
                 }
 
+                dummyView.DummyCellInit(SCALE_MULTI);
                 var outline = ComputeOutlineDummy(pos, slotLookup, gridWidth, gridHeight);
                 dummyView.SetOutlineVisibility(outline);
             }

@@ -18,13 +18,15 @@ public class GridCellView : MonoBehaviour
     /// <summary>
     /// Initialize this cell according to the slot data.
     /// </summary>
-    public void Initialize(GridSlot slot, GameObject boxPrefab, GameObject pipePrefab, GameObject cardPrefab)
+    public void Initialize(GridSlot slot, GameObject boxPrefab, GameObject pipePrefab, GameObject cardPrefab,float scaleMulti)
     {
         // Clear any existing content
         for (int i = contentParent.childCount - 1; i >= 0; i--)
         {
             DestroyImmediate(contentParent.GetChild(i).gameObject);
         }
+
+        transform.localScale = new Vector3(scaleMulti, scaleMulti, scaleMulti);
 
         // Check for a pipe below that still has boxes, and show its first box here
         var level = GameManager.Instance.CurrentLevelData;
@@ -109,5 +111,11 @@ public class GridCellView : MonoBehaviour
                 corners[3].SetActive(true);
 
         }
+    }
+
+
+    public void DummyCellInit(float scaleMulti)
+    {
+        transform.localScale = new Vector3(scaleMulti, scaleMulti, scaleMulti);
     }
 }
