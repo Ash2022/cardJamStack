@@ -16,8 +16,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] InGameUIView inGameUIView;
     [SerializeField] UnlocksManagerView unlocksManagerView;
     [SerializeField]TutorialView tutorialView;
+    [SerializeField] Texture2D _handTexture;
 
-    
     float baseAspect = 9f / 16f;   // Your target design aspect
     float baseSize = 6f;
 
@@ -51,6 +51,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+
+#if UNITY_EDITOR
+
+            Cursor.SetCursor(_handTexture, Vector2.zero, CursorMode.ForceSoftware);
+#endif
+
         Application.targetFrameRate = 60;
 
         float currentAspect = (float)Screen.width / Screen.height;
@@ -58,20 +64,25 @@ public class GameManager : MonoBehaviour
 
         //PlayerPrefs.DeleteAll();
 
-        if (currLevelIndex == -1)
+        TinySauce.SubscribeOnInitFinishedEvent((param1, param2) =>
         {
-            currLevelIndex = ModelManager.Instance.GetLastPlayedLevelIndex();
 
-            currLevelIndex++;
+            if (currLevelIndex == -1)
+            {
+                currLevelIndex = ModelManager.Instance.GetLastPlayedLevelIndex();
 
-        }
+                currLevelIndex++;
 
+            }
 
-        LoadAndStartCurrLevel();
+            LoadAndStartCurrLevel();
+        });
     }
 
     private void LoadAndStartCurrLevel()
     {
+        TinySauce.OnGameStarted(CurrLevelIndex+1);
+
         _cardViewsByID.Clear();
         _boxViewsByID.Clear();
 
@@ -578,6 +589,8 @@ public class GameManager : MonoBehaviour
             return;
 
         tutorialView.CloseTutorial();
+
+        TinySauce.OnGameFinished(win,0, CurrLevelIndex + 1);
 
         SoundsManager.Instance.PlayHaptics(SoundsManager.TapticsStrenght.High);
         SoundsManager.Instance.PlayLevelCompelte(win);
